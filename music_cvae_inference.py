@@ -1,0 +1,248 @@
+import argparse
+from tqdm import tqdm
+import numpy as np
+import torch
+import pickle
+from decode import *
+from model.MusicCVAE import MusicCVAE
+from metrics import CHE_and_CC, CTD, CTnCTR, PCS, MCTD
+from constants import Constants
+from sklearn.metrics import accuracy_score
+
+class InferenceVAE():
+    def __init__(self,args):
+        
+        self.seed = args.seed
+        self.cuda = args.cuda
+        self.device = torch.device('cuda:' + self.cuda) if torch.cuda.is_available() else 'cpu'
+        self.latent_size = Constants.LATENT_SIZE
+        self.max_seq_len = Constants.MAX_SEQUENCE_LENGTH
+        self.model_path = args.model_path
+        self.inference_size = args.inference_size
+        self.outputdir = args.outputdir
+        self.metrics_filename = args.metrics_filename
+        self.decode_to_pianoroll = args.decode_to_pianoroll
+        self.random_sample = args.random_sample
+        self.latent_size_factor = args.latent_size_factor
+        self.hidden_size_factor = args.hidden_size_factor
+        self.num_layers_factor = args.num_layers_factor
+        
+        
+    def load_data(self):
+        # Load data
+        print('loading data...')
+        # Fake data
+#         melody_data = np.random.randint(128, size = (self.inference_size, 12056, 128))
+#         melody_condition = np.random.randint(128, size = (self.inference_size, 272, 2 * 12 * 24))
+#         chord_groundtruth = np.random.randint(96 ,size = (self.inference_size, 272, 128))
+#         chord_onehot = np.random.randint(96, size = (self.inference_size, 272, 96))
+#         lengths = np.random.randint(1,272, size = (self.inference_size,))
+#         tempos = [np.random.randint(180, size = (self.inference_size))] * self.inference_size
+#         downbeats = [np.random.choice(a=[False, True], size=(self.inference_size), p=[0.5, 0.5])] * self.inference_size
+
+        melody_data = np.load('./data/melody_data.npy')
+        chord_groundtruth_idx = np.load('./data/chord_groundtruth.npy')
+        chord_onehot = np.load('./data/onehot_96.npy')
+
+        melody_condition = np.load('./data/melody_baseline.npy')
+        lengths = np.load('./data/length.npy')
+
+        f = open('./data/tempos', 'rb')
+        tempos = pickle.load(f)
+        f.close()
+        f = open('./data/downbeats', 'rb')
+        downbeats = pickle.load(f)
+        f.close()
+
+        print('splitting testing set...')
+        melody_data = melody_data[:self.inference_size]
+        chord_groundtruth_idx = chord_groundtruth_idx[:self.inference_size]
+
+        val_chord = torch.from_numpy(chord_onehot[:self.inference_size]).float()
+        val_melody_condition = torch.from_numpy(melody_condition[:self.inference_size]).float()
+        val_length = torch.from_numpy(lengths[:self.inference_size])
+
+        tempos = tempos[:self.inference_size]
+        downbeats = downbeats[:self.inference_size]
+        
+        return melody_data, val_melody_condition, chord_groundtruth_idx, val_chord, val_length, tempos, downbeats
+        
+    ## Calculate objective metrics
+    def cal_objective_metrics(self,melody,chord_pred,length):
+
+        f = open('metrics/' + self.metrics_filename + '.txt', 'w')
+        m = [0 for i in range(6)]
+        for i in range(self.inference_size):
+            chord_pred_part = chord_pred[i][:length[i]]
+            melody_part = melody[i][:length[i]]
+        #     print(chord_pred_part.shape)
+        #     print(melody_part.shape)
+
+            che, cc = CHE_and_CC(chord_pred_part, chord_num=96)
+            ctd = CTD(chord_pred_part, chord_num=96)
+            ctnctr = CTnCTR(melody_part, chord_pred_part, chord_num=96)
+            pcs = PCS(melody_part, chord_pred_part, chord_num=96)
+            mctd = MCTD(melody_part, chord_pred_part, chord_num=96)
+            m[0] += che
+            m[1] += cc
+            m[2] += ctd
+            m[3] += ctnctr
+            m[4] += pcs
+            m[5] += mctd
+            f.write(str(che) + " " + str(cc) + " " + str(ctd) + " " + str(ctnctr) + " " + str(pcs) + " " + str(mctd) + '\n')
+        f.close()
+
+        print('CHE: ', m[0]/self.inference_size)
+        print('CC: ', m[1]/self.inference_size)
+        print('CTD: ', m[2]/self.inference_size)
+        print('CTnCTR: ', m[3]/self.inference_size)
+        print('PCS: ', m[4]/self.inference_size)
+        print('MCTD: ', m[5]/self.inference_size)
+
+    def load_model(self,model_path):
+        # Load model
+        print('building model...')
+        model = MusicCVAE(teacher_forcing = False, 
+                          eps_i=0, device = self.device, 
+                          batch_size = self.inference_size,
+                          hidden_size_factor = self.hidden_size_factor,
+                          num_layers_factor = self.num_layers_factor,
+                          latent_size_factor = self.latent_size_factor
+                          ).to(self.device)
+        
+        model.load_state_dict(torch.load('output_models/' + model_path + '.pth'))
+        
+        return model
+        
+    def sample_one_by_one(self, model, melody_data, chord_idx, tempos, downbeats):
+        
+        np.random.seed(self.seed)
+        indices = np.random.randint(500, size=self.inference_size)
+#         print(indices)
+
+        for index in indices:
+            melody_truth = np.expand_dims(melody_data[index], axis=0)
+            chord_truth = np.expand_dims(chord_idx[index], axis=0)
+            tempo = [tempos[index]]
+            downbeat = [downbeats[index]]
+
+            melody = val_melody_condition[index].unsqueeze(dim=0)
+            melody = melody.view(1,-1)
+            inference_length = torch.Tensor([val_length[index]]).long()
+
+            # Sampling
+            torch.manual_seed(self.seed)
+            latent = torch.rand(1,self.latent_size).to(self.device)
+
+    #         z = torch.cat((latent,melody1,r_pitch,r_rhythm), dim=-1)
+            z = torch.cat((latent,melody), dim=-1)
+
+            _, sample = model.decode(z)
+
+            ########## Random sampling ###########
+            # Proceed chord decode
+            print('proceed chord decode...')
+            decode_length = inference_length
+            joint_prob = sample.cpu().detach().numpy()
+
+            # Append argmax index to get pianoroll array
+            accompany_pianoroll = argmax2pianoroll(joint_prob)
+
+            # augment chord into frame base
+            accompany_pianoroll_frame, chord_groundtruth_frame = sequence2frame(accompany_pianoroll, chord_truth)
+            
+            # length into frame base
+            decode_length = decode_length * Constants.BEAT_RESOLUTION * Constants.BEAT_PER_CHORD
+
+            # write pianoroll
+            result_dir = 'results/' + self.outputdir
+    #         filename = str(index) + '-pitch-' + str(args.pitch_ratio) + '-rhythm-' + str(args.rhythm_ratio)
+            filename = str(index)
+            print(result_dir)
+            print(result_dir + '/' + filename + '.mid')
+            write_one_pianoroll(result_dir, filename ,melody_truth, accompany_pianoroll_frame,chord_groundtruth_frame, decode_length, tempo,downbeat)
+        
+    def sample_from_latent(self, model, input_melody_seqs, length):
+        # Sampling
+        z = torch.randn(self.inference_size,self.latent_size).to(self.device)
+        melody_token = model.melody_embedding(input_melody_seqs,length)
+        _,samples = model.decode(z, melody_token, None, input_melody_seqs)
+        
+        return samples
+    
+    def decode2pianoroll(self, melody_data, val_length, accompany_pianoroll, chord_groundtruth_idx, tempos, downbeats):
+        
+        # augment chord into frame base
+        accompany_pianoroll_frame, chord_groundtruth_frame = sequence2frame(accompany_pianoroll, chord_groundtruth_idx)
+ 
+        # length into frame base
+        decode_length = val_length * Constants.BEAT_RESOLUTION * Constants.BEAT_PER_CHORD
+
+        # write pianoroll
+        result_dir = 'results/' + self.outputdir
+        write_pianoroll(result_dir, melody_data, accompany_pianoroll_frame,chord_groundtruth_frame, decode_length, tempos,downbeats)
+
+    ## Model inference
+    def run(self):
+        
+        melody_data, val_melody_seqs, chord_groundtruth_idx, _, val_length, tempos, downbeats = self.load_data()
+        val_melody_seqs, val_length = val_melody_seqs.to(self.device), val_length.to(self.device).squeeze()
+        val_length = val_length.cpu().detach().numpy()
+        
+        model = self.load_model(self.model_path)
+        model.eval()  
+        
+        if self.random_sample:
+            self.sample_one_by_one(model, melody_data, chord_idx, tempos, downbeats)
+        
+        else:
+            ########## Sampling ###########
+            with torch.no_grad():
+                samples = self.sample_from_latent(model, val_melody_seqs, val_length)
+
+            # Proceed chord decode
+            print('proceed chord decode...')
+            samples = samples.cpu().detach().numpy()
+            joint_prob = samples
+
+            # Append argmax index to get pianoroll array
+            accompany_pianoroll = argmax2pianoroll(joint_prob)
+
+            # cal metrics
+            val_melody_seqs = val_melody_seqs.cpu().detach().numpy()
+            self.cal_objective_metrics(val_melody_seqs, samples, val_length)
+            
+            # Decode to pianoroll or not
+            if self.decode_to_pianoroll:
+                self.decode2pianoroll(melody_data, val_length, accompany_pianoroll, chord_groundtruth_idx, tempos, downbeats)
+
+## Main
+def main():
+    ''' 
+    Usage:
+    python cvae_inference.py -model_path ///
+    '''
+
+    parser = argparse.ArgumentParser(description='Set configs to training process.') 
+    
+    parser.add_argument('-latent_size', type=int, default=16) 
+    parser.add_argument('-inference_size', type=int, default=500) 
+    parser.add_argument('-model_path', type=str, required=True)
+    parser.add_argument('-outputdir', type=str, default='new_results')
+    parser.add_argument('-metrics_filename', type=str, default='new_metrics')
+    parser.add_argument('-cuda', type=str, default='0')
+    parser.add_argument('-seed', default=30, type=str, help='random seed')
+    parser.add_argument('-decode_to_pianoroll', default=False)
+    parser.add_argument('-random_sample', default=False)
+    parser.add_argument('-latent_size_factor', type=int, default=1)
+    parser.add_argument('-hidden_size_factor', type=int, default=1)
+    parser.add_argument('-num_layers_factor', type=int, default=1)
+    
+    args = parser.parse_args()
+    
+    inference = InferenceVAE(args)
+    inference.run()
+    
+if __name__ == '__main__':
+    main()
+
