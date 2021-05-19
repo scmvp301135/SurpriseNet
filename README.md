@@ -1,12 +1,50 @@
 # SupriseNet
 SurpriseNet: Melody Harmonization Conditioning on User-controlled Surpise Contours
+This is the source code of SurpriseNet, a user-controlled conditional CVAE model based on user's indication to complete melody harmonization.
 
-paper: https://arxiv.org/pdf/2010.13468.pdf
+### Downloading Dataset
 
-demo page: https://chord-generation.herokuapp.com/demo
+We performed experiments on the [Hooktheory Lead Sheet Dataset (HLSD)](https://github.com/wayne391/lead-sheet-dataset) , which contains high-quality and human-arranged melodies with chord progressions. The dataset is provided in two formats, event-based JSON files and MIDI files. Furthermore, there are many types of labels on chords, such as chord symbols and Roman numerals for reference. You have to download the dataset first to reproduce the work.
 
-1. download lead sheet dataset
-2. run create_dataset.py
-3. run roman_data.py
-4. start training with train.py
-5. inference 500 songs with test.py
+### Convert data to numpy for training 
+
+After downloading, we have to convert JSON files to npy and npz files and for training. 
+
+### Create surprise contours data
+
+After converting, we have to create surprise contours data and weight chord data for training as well.
+
+### Training
+All package requirements are contained in `requirements.txt`. To train the model, run:
+
+```bash
+pip install -r requirements.txt
+python surprisenet_train.py
+```
+
+`surprisenet_train.py` is written using argparse
+
+```bash
+python surprisenet_train.py with -epoch 10 -save_model model_surprisenet
+```
+
+Trained models will be saved in the specified `save_model` which is a required argument.
+
+### Inference
+
+All package requirements are contained in `requirements.txt`. To train the model, run:
+
+```bash
+python surprisenet_inference.py
+```
+
+`surprisenet_inference` is also written using argparse, give `model_path` to generate chords:
+
+```bash
+python surprisenet_inference.py with -model_path model_surprisenet
+```
+
+
+
+
+
