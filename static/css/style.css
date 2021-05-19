@@ -1,0 +1,83 @@
+body {
+    font-size: 16px;
+    background-color: whitesmoke;
+    font-family: "Open Sans";
+  }
+
+.header{
+    text-align: left;
+    margin: 0 auto;
+    color: #fff;
+    text-align: center;
+    background-color: #159957;
+    background-image: linear-gradient(120deg, #155799, #159957);
+}
+
+.header .project-name{
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0.1rem;
+}
+
+.btn-outline-dark {
+    color: whitesmoke;
+    border-color: whitesmoke;
+}
+
+.content{
+    margin-top:30px;
+    width:100%;
+}
+
+.content h2{
+    margin-bottom: 1rem;
+    font-weight: normal;
+    color: #159957;
+    font-size: 1.5em;
+}
+
+.content p{
+    margin-bottom: 1em;
+}
+
+@media screen and (max-width: 42em) {
+    .header{
+        padding: 2rem 1rem;
+    }
+    .project-name {
+        font-size: 1.75rem;
+    }
+    .content {
+        padding: 2rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+@media screen and (min-width: 42em) and (max-width: 64em) {
+    .header {
+        padding: 3rem 4rem;
+    }
+    .project-name {
+        font-size: 2.25rem;
+    }
+    .content {
+        padding: 2rem 4rem;
+        font-size: 1.1rem;
+    }
+}
+
+@media screen and (min-width: 64em){
+    .header {
+        padding: 5rem 6rem;
+    }
+    .project-name {
+        font-size: 3.25rem;
+    }
+    .content {
+        max-width: 64rem;
+        padding: 2rem 6rem;
+        margin: 0 auto;
+        font-size: 1.1rem;
+    }
+
+}
