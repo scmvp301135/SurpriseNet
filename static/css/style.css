@@ -1,7 +1,7 @@
 body {
     font-size: 16px;
     /* background-color: whitesmoke; */
-    font-family: "Open Sans";
+    /* font-family: "Open Sans"; */
   }
 
 .header{
@@ -48,32 +48,22 @@ body {
     width: 50%;
 }
 
-.audio-blk{
+.media-blk{
     display:flex;
 }
 
-.audio-blk img{
+.media-blk video{
     width: 100%;
+    height:150px;
 }
 
-.surp-contour{
+.surpnet-song{
     flex:1;
-    display:flex;
-    align-items:center;
+    margin-right: 1em;
 }
 
-.surp-contour{
+.weighted-surpnet-song{
     flex:1;
-    display:flex;
-    align-items:center;
-}
-
-.audio-file{
-    flex:1;
-}
-
-.audio-file audio{
-    width: 100%;
 }
 
 
