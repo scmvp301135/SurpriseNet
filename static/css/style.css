@@ -54,7 +54,15 @@ body {
 
 .media-blk video{
     width: 100%;
-    height:150px;
+    height:120px;
+}
+
+.media-blk img{
+    width:10%;
+}
+
+.media-blk h5{
+    font-size: 0.8em;
 }
 
 .surpnet-song{
@@ -91,6 +99,9 @@ body {
         padding: 2rem 4rem;
         font-size: 1.1rem;
     }
+    .media-blk h5{
+        font-size: 1em;
+    }
 }
 
 @media screen and (min-width: 64em){
@@ -105,6 +116,9 @@ body {
         padding: 2rem 6rem;
         margin: 0 auto;
         font-size: 1.1rem;
+    }
+    .media-blk h5{
+        font-size: 1em;
     }
 
 }
