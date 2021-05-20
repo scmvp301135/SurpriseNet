@@ -21,10 +21,142 @@
     </div>
 
     <div class="content">
-        <h2 id="surprisenet">SurpriseNet</h2>
-        <p><span style="font-style: italic;">Yi-Wei Chen, Hung-Shin Lee, Yen-Hsing Chen, Hsin-Min Wang,</span> "<span style="font-weight: bold;">SurpriseNet: Melody Harmonization Conditioning on User-controlled Surpise Contours,</span>" submitting to <span style="font-style: italic;">Proc. ISMIR,</span> 2021.</p>
-        <p>In this paper, we proposed SurpriseNet, which is based on a conditional VAE model and combines a surprise contour from the transition probability in a Markov chain, to achieve a user-controlled melody harmonization task. From the generated samples, we observed that the model could accurately generate various harmonic chord progressions according to the given surprise contours.</p>
-        <p>The results of experiments on the Hooktheory Lead Sheet Dataset, which contains rich intonation data, such as Roman, symbol, secondary, and mode data. Here are the generated samples below :</p>
+
+        <div class="block">   
+            <h2 id="surprisenet">SurpriseNet</h2>
+            <p><span style="font-style: italic;">Yi-Wei Chen, Hung-Shin Lee, Yen-Hsing Chen, Hsin-Min Wang,</span> "<span style="font-weight: bold;">SurpriseNet: Melody Harmonization Conditioning on User-controlled Surpise Contours,</span>" submitting to <span style="font-style: italic;">Proc. ISMIR,</span> 2021.</p>
+            <p>In this paper, we proposed SurpriseNet, which is based on a conditional VAE model and combines a surprise contour from the transition probability in a Markov chain, to achieve a user-controlled melody harmonization task. From the generated samples, we observed that the model could accurately generate various harmonic chord progressions according to the given surprise contours.</p>
+            <p>The results of experiments on the Hooktheory Lead Sheet Dataset, which contains rich intonation data, such as Roman, symbol, secondary, and mode data.</p>
+        </div>   
+
+        <div class="block">   
+            <h2>Surprise Contours</h2>
+            <p>In this paper, we give out the following six types of function as the surprise controus to the model.</p>
+            <div id="surp-contour">
+                <img src="static/image/user_condition.png" alt="">
+            </div>
+        </div>  
+
+        <div class="block">   
+            <h2>Generated samples</h2>
+            <p>Here we select some generated samples and demonstrate below:</p>
+
+            <div class="audio-blk">
+                <div class="surpnet">
+                    <h5>Song1 - SurpriseNet</h5>
+                    <small>Type (a)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+
+                <div class="weighted-surpnet">
+                    <h5>Song1 - Weighted SurpriseNet</h5>
+                    <small>Type (a)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-blk">
+                <div class="surpnet">
+                    <small>Type (b)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+
+                <div class="weighted-surpnet">
+                    <small>Type (b)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-blk">
+                <div class="surpnet">
+                    <small>Type (c)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+
+                <div class="weighted-surpnet">
+                    <small>Type (c)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="audio-blk">
+                <div class="surpnet">
+                    <small>Type (d)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+
+                <div class="weighted-surpnet">
+                    <small>Type (d)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-blk">
+                <div class="surpnet">
+                    <small>Type (e)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+
+                <div class="weighted-surpnet">
+                    <small>Type (e)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-blk">
+                <div class="surpnet">
+                    <small>Type (f)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+
+                <div class="weighted-surpnet">
+                    <small>Type (f)</small>
+                    <img src="static/image/81-weight-type-2.png" alt="">
+                    <div class="audio-file">
+                        <audio controls src="static/mp3/baseline_1.mp3" alt="">
+                    </div>
+                </div>
+            </div>
+
+        </div>  
+
+        
+
+
+
     </div>
 
     <!-- jQuery library -->

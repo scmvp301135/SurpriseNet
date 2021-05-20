@@ -1,6 +1,6 @@
 body {
     font-size: 16px;
-    background-color: whitesmoke;
+    /* background-color: whitesmoke; */
     font-family: "Open Sans";
   }
 
@@ -39,6 +39,43 @@ body {
 .content p{
     margin-bottom: 1em;
 }
+
+.block {
+    margin-bottom: 1rem;
+}
+
+.block img{
+    width: 50%;
+}
+
+.audio-blk{
+    display:flex;
+}
+
+.audio-blk img{
+    width: 100%;
+}
+
+.surp-contour{
+    flex:1;
+    display:flex;
+    align-items:center;
+}
+
+.surp-contour{
+    flex:1;
+    display:flex;
+    align-items:center;
+}
+
+.audio-file{
+    flex:1;
+}
+
+.audio-file audio{
+    width: 100%;
+}
+
 
 @media screen and (max-width: 42em) {
     .header{
