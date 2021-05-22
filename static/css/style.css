@@ -74,6 +74,13 @@ body {
     flex:1;
 }
 
+video::-webkit-media-controls-panel {
+    background-image: none !important;
+    filter: brightness(0.5);
+    opacity: 0.6 !important;
+ 
+}
+
 
 @media screen and (max-width: 42em) {
     .header{
