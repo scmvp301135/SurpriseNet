@@ -1,11 +1,15 @@
 $(function(){
-
-    // Handle submit event
-    // $('#submit').click(function() {
-    //     $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...').attr('disabled', true);
-    //     setTimeout(function() {
-    //         $("#form").submit();
-    //     }, 1000);
-    // });
-    
+    $(".video").parent().click(function () {
+        console.log('click');
+        console.log($(this).children(".playpause"));
+        if(
+            $(this).children(".video").get(0).paused){        
+            $(this).children(".video").get(0).play();   
+            $(this).children(".playpause").fadeOut();
+        }
+        else{       
+            $(this).children(".video").get(0).pause();
+            $(this).children(".playpause").fadeIn();
+        }
+    });  
 });
