@@ -4,6 +4,7 @@ import numpy as np
 from torch.nn import functional as F
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from torch.autograd import Variable
+from constants import Constants
 
 class CVAE(nn.Module):
     def __init__(self,
@@ -18,19 +19,20 @@ class CVAE(nn.Module):
         self.params = params
         self.device = device
         
-        if self.model_type == 'SurpriseNet':
+        if self.model_type == 'CVAE':
             self.params.PRENET_SIZE = 0 
         
-        # Surprisingness to prenet
-        self.surprise_prenet = nn.LSTM(input_size=1, 
-                               hidden_size = self.params.LATENT_SIZE , 
-                               num_layers=self.params.ENCODER_NUM_LAYERS,
-                               batch_first=True, 
-                               dropout=0.2,
-                               bidirectional=True)
+        elif self.model_type == 'SurpriseNet':
+            # Surprisingness to prenet
+            self.surprise_prenet = nn.LSTM(input_size=1, 
+                                   hidden_size = self.params.PRENET_SIZE , 
+                                   num_layers=self.params.PRENET_NUM_LAYERS,
+                                   batch_first=True, 
+                                   dropout=0.2,
+                                   bidirectional=True)
         
         # Encoder
-        self.encoder = nn.LSTM(input_size=self.params.NUM_CHORDS + self.params.BEAT_RESOLUTION * 2 * 12 + self.params.PRENET_SIZE * 2, 
+        self.encoder = nn.LSTM(input_size=self.params.NUM_CHORDS + Constants.BEAT_RESOLUTION * 2 * 12 + self.params.PRENET_SIZE * 2, 
                                hidden_size=self.params.ENCODER_HIDDEN_SIZE , 
                                num_layers=self.params.ENCODER_NUM_LAYERS,
                                batch_first=True,
@@ -42,7 +44,7 @@ class CVAE(nn.Module):
         self.encoder_output2logv = nn.Linear(self.params.ENCODER_HIDDEN_SIZE * 2, self.params.LATENT_SIZE)
         
         # Latent to decoder
-        self.latent2decoder_input = nn.Linear(self.params.LATENT_SIZE + self.params.BEAT_RESOLUTION * 2 * 12 + self.params.PRENET_SIZE * 2, self.params.DECODER_HIDDEN_SIZE // 2)
+        self.latent2decoder_input = nn.Linear(self.params.LATENT_SIZE + Constants.BEAT_RESOLUTION * 2 * 12 + self.params.PRENET_SIZE * 2, self.params.DECODER_HIDDEN_SIZE // 2)
         
         # Decoder
         self.decoder = nn.LSTM(input_size=self.params.DECODER_HIDDEN_SIZE // 2, 
@@ -53,9 +55,12 @@ class CVAE(nn.Module):
                                bidirectional=True)
         
         # Decoder to reconstructed chords
-        self.outputs2chord = nn.Linear(self.params.DECODER_NUM_LAYERS * 2,self.params.NUM_CHORDS)
+        self.outputs2chord = nn.Linear(self.params.DECODER_HIDDEN_SIZE * 2,self.params.NUM_CHORDS)
 
     def surprise_embedding(self, surprise_condition, length):
+        
+#         print('surprise',surprise_condition.shape)
+#         print('length',length.shape)
         # Pack data to encoder
         packed_x = pack_padded_sequence(surprise_condition, length, batch_first=True, enforce_sorted=False)
         prenet_output , (hidden, _) = self.surprise_prenet(packed_x)
@@ -67,6 +72,8 @@ class CVAE(nn.Module):
     
     def encode(self, input_seq, length):
         
+#         print('input_seq',input_seq.shape)
+#         print('length',length.shape)
         # Pack data to encoder
         packed_x = pack_padded_sequence(input_seq, length, batch_first=True, enforce_sorted=False)
         encoder_output , (hidden, _) = self.encoder(packed_x)
@@ -119,7 +126,7 @@ class CVAE(nn.Module):
             # Surprsie contour to prenet
             surprise_condition = self.surprise_embedding(surprise_condition,length)
             encoder_input = torch.cat([input_chord,melody_condition,surprise_condition], dim = -1)
-            decoder_input = torch.cat([melody_condition, surprise_condition],dim=-1)
+            decoder_input = torch.cat([melody_condition, surprise_condition],dim = -1)
         
         elif self.model_type == 'CVAE':
         
@@ -140,7 +147,7 @@ class CVAE(nn.Module):
         output, softmax = self.decode(z, decoder_input)
         
         # Log Softmax
-        logp = F.log_softmax(output, dim=-1)
+        logp = F.log_softmax(output, dim = -1)
     
         return softmax,logp, mu, log_var, input_chord
 

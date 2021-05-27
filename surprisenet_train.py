@@ -11,7 +11,7 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import random
 from model.SurpriseNet import CVAE
 from sklearn.metrics import accuracy_score
-from constants import Constants_CVAE, Constants_CVAE_all_chords 
+from constants import CVAE_Constants, CVAE_All_Chords_Constants
 
 class TrainingVAE():
     def __init__(self, args, step=0, k=0.0025, x0=2500):
@@ -20,7 +20,7 @@ class TrainingVAE():
         self.val_size = args.val_size
         self.model_type = args.model_type
         self.all_chords = args.all_chords
-        self.params = Constants_CVAE_all_chords if self.all_chords else Constants_CVAE
+        self.params = CVAE_All_Chords_Constants if self.all_chords else CVAE_Constants
         self.epoch = args.epoch
         self.learning_rate = args.learning_rate
         self.cuda = args.cuda
@@ -64,10 +64,10 @@ class TrainingVAE():
         
         # Create dataloader
         print('creating dataloader...')
-        train_dataset = ChordGenerDataset(data_type='train',all_chords=True)
+        train_dataset = ChordGenerDataset(data_type='train',all_chords=self.all_chords)
         train_dataloader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=16, drop_last=True)
         
-        val_dataset = ChordGenerDataset(data_type='validation',all_chords=True)
+        val_dataset = ChordGenerDataset(data_type='validation',all_chords=self.all_chords)
         val_dataloader = DataLoader(val_dataset, batch_size=self.val_size, shuffle=True, num_workers=16, drop_last=True)
         
         return train_dataloader, val_dataloader, weight_chord
@@ -91,6 +91,12 @@ class TrainingVAE():
                 data = [x.to(self.device) for x in data]
                 chord_onehot, length, melody, surprise, chord_index = data
                 optimizer.zero_grad()
+                
+                print('chord_onehot',chord_onehot.shape) 
+                print('length',length.shape)
+                print('melody',melody.shape)
+                print('surprise',surprise.shape) 
+                print('chord_index',chord_index.shape)
                 
                 # Model prediction
                 if self.model_type == 'SurpriseNet':
