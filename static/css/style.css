@@ -70,7 +70,6 @@ body {
 
 .media-blk .song{
     padding-left: 1em;
-    display:flex;
     flex-direction: column;
     flex:2;
 }
@@ -87,10 +86,8 @@ body {
 } */
 
 .wrapper{
-    display:flex;
     flex-direction: column;
     position:relative;
-    flex: 1;
 }
 
 .playpause {
