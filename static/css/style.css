@@ -51,7 +51,8 @@ body {
 }
 
 .media-blk img{
-    max-width:80%;
+    max-width:100%;
+    object-fit: contain;
 }
 
 .media-blk h5{
@@ -68,9 +69,10 @@ body {
 }
 
 .media-blk .song{
+    padding-left: 1em;
     display:flex;
     flex-direction: column;
-    flex:1;
+    flex:2;
 }
 
 .song video{
