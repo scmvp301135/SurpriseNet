@@ -1,7 +1,7 @@
 body {
     font-size: 16px;
     /* background-color: whitesmoke; */
-    /* font-family: "Open Sans"; */
+    font-family: ColfaxAI, Helvetica, sans-serif;
   }
 
 .header{
@@ -37,6 +37,12 @@ body {
     font-size: 1.5em;
 }
 
+.content h3{
+    margin-bottom: 2rem;
+    font-size: 1.2em;
+    border-bottom: solid;
+}
+
 .content p{
     margin-bottom: 1em;
 }
@@ -47,8 +53,7 @@ body {
 
 .media-blk{
     display:flex;
-    margin-bottom: 2rem;
-
+    margin-bottom: 3rem;
 }
 
 .media-blk img{
@@ -74,6 +79,7 @@ body {
 }
 
 .media-blk .song{
+    text-align: center;
     padding-left: 1em;
     flex:2;
 }
@@ -83,22 +89,15 @@ body {
     width: 100%;
 }
 
-/* video::-webkit-media-controls-panel {
-    background-image: none !important;
-    filter: brightness(0.5);
-    opacity: 0.6 !important;
-} */
-
 .wrapper{
-    flex-direction: column;
     position:relative;
 }
 
 .playpause {
     background-image:url('../media/play_pause.png');
     background-repeat:no-repeat;
-    width:20%;
-    height:20%;
+    width:25%;
+    height:25%;
     position:absolute;
     left:0%;
     right:0%;
@@ -107,6 +106,10 @@ body {
     margin:auto;
     background-size:contain;
     background-position: center;
+}
+
+.truth{
+    max-width:70%;
 }
 
 @media screen and (max-width: 42em) {

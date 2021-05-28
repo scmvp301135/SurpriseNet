@@ -26,7 +26,7 @@
             <h2>SurpriseNet</h2>
             <p>
                 <!-- <span style="font-style: italic;">Yi-Wei Chen, Hung-Shin Lee, Yen-Hsing Chen, Hsin-Min Wang,</span> " -->
-                <span style="font-weight: bold;">SurpriseNet: Melody Harmonization Conditioning on User-controlled Surpise Contours,</span>" submitted to <span style="font-style: italic;">ISMIR 2021 </span> in double-blind reviewing.
+                "<span style="font-weight: bold;">SurpriseNet: Melody Harmonization Conditioning on User-controlled Surpise Contours,</span>" submitted to <span style="font-style: italic;">ISMIR 2021 </span> in double-blind reviewing.
             </p>
             <p>In this study, we proposed SurpriseNet, which is based on a conditional VAE model and combines a surprise contour from the transition probability in a Markov chain, to achieve a user-controlled melody harmonization task. From the generated samples, we observed that the model could accurately generate various harmonic chord progressions according to the given surprise contours.</p>
             <p>The experiments were conducted on the <a href="https://github.com/wayne391/lead-sheet-dataset">Hooktheory Lead Sheet Dataset</a>, which contains rich intonation data, such as Roman, symbol, secondary, and mode data.</p>
@@ -41,13 +41,25 @@
         </div>   -->
 
         <div class="block">   
-            <h2>Generated samples</h2>
-            <p> We give out the following six types (a) - (f) of function as the surprise contours to the model. The graphs indicate the surprise level of chords varing with time. Here we select some generated samples and demonstrate below:</p>
+            <h2>Generated Samples</h2>
+            <p> We gave out the following six types (a) - (f) of function as the surprise contours to the model. The graphs indicate the surprise level of chords varing with time. Here we selected some generated samples and demonstrated below:</p>
 
-            <h4>Joe Dassin - "Les Champs-Elysées"</h4>
+            <!-- Song1 -->
+            <h3>🎧 Joe Dassin - "Les Champs-Elysées" (verse)</h3>
+            <div class="media-blk">
+                <div class="song">
+                    <small>Groundturth</small>
+                    <div class="wrapper">
+                        <video class="video truth">
+                            <source src="static/media/81-truth.mp4" type="video/mp4">
+                        </video>
+                        <div class="playpause"></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="media-blk">
                 <div class="contour">
-                    <!-- <h5>Type (a)</h5> -->
                     <img src="static/media/Type-a.png" alt=""> 
                 </div>
 
@@ -71,7 +83,6 @@
 
             <div class="media-blk">
                 <div class="contour">
-                    <!-- <h5>Type (a)</h5> -->
                     <img src="static/media/Type-b.png" alt=""> 
                 </div>
 
@@ -95,7 +106,6 @@
 
             <div class="media-blk">
                 <div class="contour">
-                    <!-- <h5>Type (a)</h5> -->
                     <img src="static/media/Type-c.png" alt=""> 
                 </div>
 
@@ -186,24 +196,22 @@
                 </div>
             </div>
 
+            <!-- Song 2 -->
+            <h3>🎧 Jack Johnson - "Breakdown" (verse)</h3>
             <div class="media-blk">
-                <div class="contour"></div>
                 <div class="song">
                     <small>Groundturth</small>
                     <div class="wrapper">
                         <video class="video truth">
-                            <source src="static/media/81-truth.mp4" type="video/mp4">
+                            <source src="static/media/5-truth.mp4" type="video/mp4">
                         </video>
                         <div class="playpause"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Song 2 -->
-            <h4>Jack Johnson - "Breakdown" (verse)</h4>
             <div class="media-blk">
                 <div class="contour">
-                    <!-- <h5>Type (a)</h5> -->
                     <img src="static/media/Type-a.png" alt=""> 
                 </div>
 
@@ -227,7 +235,6 @@
 
             <div class="media-blk">
                 <div class="contour">
-                    <!-- <h5>Type (a)</h5> -->
                     <img src="static/media/Type-b.png" alt=""> 
                 </div>
 
@@ -251,7 +258,6 @@
 
             <div class="media-blk">
                 <div class="contour">
-                    <!-- <h5>Type (a)</h5> -->
                     <img src="static/media/Type-c.png" alt=""> 
                 </div>
 
@@ -342,21 +348,19 @@
                 </div>
             </div>
 
+            <!-- Song 3 -->
+            <h3>🎧 Jack Johnson - "Breakdown" (chorus)</h3>
             <div class="media-blk">
-                <div class="contour"></div>
                 <div class="song">
                     <small>Groundturth</small>
                     <div class="wrapper">
                         <video class="video truth">
-                            <source src="static/media/5-truth.mp4" type="video/mp4">
+                            <source src="static/media/4-truth.mp4" type="video/mp4">
                         </video>
                         <div class="playpause"></div>
                     </div>
                 </div>
             </div>
-
-            <!-- Song 3 -->
-            <h4>Jack Johnson - "Breakdown" (chorus)</h4>
             <div class="media-blk">
                 <div class="contour">
                     <img src="static/media/Type-a.png" alt=""> 
@@ -405,7 +409,6 @@
 
             <div class="media-blk">
                 <div class="contour">
-                    <!-- <h5>Type (a)</h5> -->
                     <img src="static/media/Type-c.png" alt=""> 
                 </div>
 
@@ -490,19 +493,6 @@
                     <div class="wrapper">
                         <video class="video">
                             <source src="static/media/4-weight-type6.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour"></div>
-                <div class="song">
-                    <small>Groundturth</small>
-                    <div class="wrapper">
-                        <video class="video truth">
-                            <source src="static/media/4-truth.mp4" type="video/mp4">
                         </video>
                         <div class="playpause"></div>
                     </div>
