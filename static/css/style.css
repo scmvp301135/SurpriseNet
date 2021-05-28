@@ -52,6 +52,10 @@ body {
 }
 
 .media-blk img{
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    margin: auto;
     max-width:100%;
     object-fit: contain;
 }
@@ -65,13 +69,12 @@ body {
 }
 
 .media-blk .contour{
-    display:flex;
+    position: relative;
     flex:1;
 }
 
 .media-blk .song{
     padding-left: 1em;
-    flex-direction: column;
     flex:2;
 }
 
