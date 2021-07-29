@@ -1,6 +1,6 @@
 # SurpriseNet
 
-### SurpriseNet: Melody Harmonization Conditioning on User-controlled Surpise Contours
+### SurpriseNet: Melody Harmonization Conditioning on User-controlled Surprise Contours
 This is the source code of SurpriseNet, a user-controlled conditional CVAE model based on user's indication to complete melody harmonization.
 Some generated samples are available at [https://scmvp301135.github.io/SurpriseNet](https://scmvp301135.github.io/SurpriseNet).
 
