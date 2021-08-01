@@ -1,0 +1,5 @@
+# Python:
+*.pyc
+
+# My configurations:
+static/media/*.mp4
