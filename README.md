@@ -7,10 +7,34 @@ Some generated samples are available at [https://scmvp301135.github.io/SurpriseN
 For more information, see our paper:
 [arXiv paper](https://arxiv.org/abs/2108.00378).
 
+### Installation
+To install SurpriseNet, clone the repo and install it using conda:
+
+```
+# First clone and enter the repo
+git clone https://github.com/scmvp301135/SurpriseNet.git
+cd SurpriseNet
+```
+
+* Create environment with conda:
+```
+# First clone and enter the repo
+conda env create -f environment.yml
+conda activate surprisenet
+```
 
 ### Downloading Dataset
 
 We performed experiments on the [Hooktheory Lead Sheet Dataset (HLSD)](https://github.com/wayne391/lead-sheet-dataset) , which contains high-quality and human-arranged melodies with chord progressions. The dataset is provided in two formats, event-based JSON files and MIDI files. Furthermore, there are many types of labels on chords, such as chord symbols and Roman numerals for reference. You have to download the dataset first to reproduce the work.
+
+```
+git clone https://github.com/wayne391/lead-sheet-dataset
+
+cd lead_sheet_dataset/src
+python theorytab_crawler.py # Remember to uncomment Line 12 in theorytab_crawler.py to crawl full songs. 
+python main.py
+
+```
 
 ### Convert data to numpy for training 
 

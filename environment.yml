@@ -1,0 +1,21 @@
+name: surprisenet
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - python=3.6
+  - pip
+  - pip:
+    - mido
+    - matplotlib
+    - music21
+    - numpy
+    - pretty-midi
+    - scipy
+    - pypianoroll
+    - torch
+    - torchvision
+    - tqdm
+    - matplotlib
+    - requests
+    - bs4
