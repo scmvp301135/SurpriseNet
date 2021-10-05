@@ -8,7 +8,7 @@ For more information, see our paper:
 [arXiv paper](https://arxiv.org/abs/2108.00378).
 
 ### Installation
-To install SurpriseNet, clone the repo and install it using conda:
+* To install SurpriseNet, clone the repo and install it using conda:
 
 ```
 # First clone and enter the repo
@@ -24,25 +24,19 @@ conda activate surprisenet
 
 ### Downloading Dataset
 
-We performed experiments on the [Hooktheory Lead Sheet Dataset (HLSD)](https://github.com/wayne391/lead-sheet-dataset) , which contains high-quality and human-arranged melodies with chord progressions. The dataset is provided in two formats, event-based JSON files and MIDI files. Furthermore, there are many types of labels on chords, such as chord symbols and Roman numerals for reference. You have to download the dataset first to reproduce the work: 
+We performed experiments on the [Hooktheory Lead Sheet Dataset (HLSD)](https://github.com/wayne391/lead-sheet-dataset) , which contains high-quality and human-arranged melodies with chord progressions. The dataset is provided in two formats, event-based JSON files and MIDI files. Furthermore, there are many types of labels on chords, such as chord symbols and Roman numerals for reference. 
+
+‼️ We recommend downloading the prepared dataset directly from the link below, as the crawler program is not ready for the updated website.
 
 ***Latest Update:***
-* ***Sample Dataset: 2018/8/1***
-
+***Sample Dataset: 2018/8/1***
 ***Source:*** [Link](https://drive.google.com/file/d/13iB5Brk1hypKsw9TSf8_d4Ka3xU0XmFZ/view?usp=sharing) (4.9 G).  
 
-Or use wget to download  google drive files:
+* Or use wget to download  google drive files:
 ```
 wget --load-cookies /tmp/cookies.txt "https://drive.google.com/u/0/uc?id=13iB5Brk1hypKsw9TSf8_d4Ka3xU0XmFZ&export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/u/0/uc?id=13iB5Brk1hypKsw9TSf8_d4Ka3xU0XmFZ&export=download&id=FILEID' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=FILEID" -O hooktheory_dataset.tar.gz && rm -rf /tmp/cookies.txt
 
 tar -xvf hooktheory_dataset.tar.gz
-```
-
-### Convert data to numpy for training 
-
-After downloading, we have to convert JSON files to npy and npz files and for training. 
-```
-python create_dataset.py
 ```
 
 ### Create surprise contours data
