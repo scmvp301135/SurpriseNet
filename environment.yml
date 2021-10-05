@@ -12,10 +12,12 @@ dependencies:
     - numpy
     - pretty-midi
     - scipy
-    - pypianoroll
+    - pypianoroll==0.5.3 
     - torch
     - torchvision
     - tqdm
     - matplotlib
     - requests
     - bs4
+    - xmltodict
+    - lxml

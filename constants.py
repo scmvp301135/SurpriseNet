@@ -4,8 +4,9 @@ class Constants():
     # Chord length 
     BEAT_PER_CHORD = 2
     CHORDS_PER_BAR = 2
+
+    # 96 simplified chords
     NUM_CHORDS = 96
-    ALL_NUM_CHORDS = 633
     BARS_PER_CONDUCTOR = 8
 
     # Beat resolution
