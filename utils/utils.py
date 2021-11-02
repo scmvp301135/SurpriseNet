@@ -27,7 +27,7 @@ def pianoroll_to_note(pianoroll):
     return notes
 
 # Pianoroll (midi) to index numbers
-def pianoroll_to_number(pianoroll):
+def pianoroll_to_index(pianoroll):
     midi_number = []
     for i in range(128):
         if pianoroll[i] != 0:
@@ -39,15 +39,15 @@ def pianoroll_to_number(pianoroll):
     return midi_number
 
 # Index to 12 notes onehot 
-def number_to_onehot(number):
+def index_to_onehot(index):
     onehot = [0 for i in range(12)]
-    for i in number:
+    for i in index:
         onehot[i] = 1
 
     return onehot
 
 # Note string to 12 onehot index
-def note_to_number(notes):
+def note_to_index(notes):
     note_to_num = {'C':0,
                    'C#':1, 'Db':1,
                    'D':2,
@@ -65,7 +65,7 @@ def note_to_number(notes):
         num.append(note_to_num[note])
     return num
 
-def symbol_to_number96(symbol):
+def symbol_to_index96(symbol):
     # order: major, minor. aug, dim, sus, major7, minor7, dominant7
     order = 0
     char_list = list(symbol)
@@ -239,47 +239,46 @@ def symbol_to_onehot96(symbol):
 
 
 # Calculate tonal coordinate in tonal space
-# def tonal_centroid(notes):
-#     fifths_lookup = {9:[1.0, 0.0], 2:[math.cos(math.pi / 6.0), math.sin(math.pi / 6.0)], 7:[math.cos(2.0 * math.pi / 6.0), math.sin(2.0 * math.pi / 6.0)],
-#                      0:[0.0, 1.0], 5:[math.cos(4.0 * math.pi / 6.0), math.sin(4.0 * math.pi / 6.0)], 10:[math.cos(5.0 * math.pi / 6.0), math.sin(5.0 * math.pi / 6.0)],
-#                      3:[-1.0, 0.0], 8:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)], 1:[math.cos(8.0 * math.pi / 6.0), math.sin(8.0 * math.pi / 6.0)],
-#                      6:[0.0, -1.0], 11:[math.cos(10.0 * math.pi / 6.0), math.sin(10.0 * math.pi / 6.0)], 4:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)]}
-#     minor_thirds_lookup = {3:[1.0, 0.0], 7:[1.0, 0.0], 11:[1.0, 0.0],
-#                            0:[0.0, 1.0], 4:[0.0, 1.0], 8:[0.0, 1.0],
-#                            1:[-1.0, 0.0], 5:[-1.0, 0.0], 9:[-1.0, 0.0],
-#                            2:[0.0, -1.0], 6:[0.0, -1.0], 10:[0.0, -1.0]}
-#     major_thirds_lookup = {0:[0.0, 1.0], 3:[0.0, 1.0], 6:[0.0, 1.0], 9:[0.0, 1.0],
-#                            2:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)], 5:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)], 8:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)], 11:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)],
-#                            1:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)], 4:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)], 7:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)], 10:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)]}
+def tonal_centroid(notes):
+    fifths_lookup = {9:[1.0, 0.0], 2:[math.cos(math.pi / 6.0), math.sin(math.pi / 6.0)], 7:[math.cos(2.0 * math.pi / 6.0), math.sin(2.0 * math.pi / 6.0)],
+                     0:[0.0, 1.0], 5:[math.cos(4.0 * math.pi / 6.0), math.sin(4.0 * math.pi / 6.0)], 10:[math.cos(5.0 * math.pi / 6.0), math.sin(5.0 * math.pi / 6.0)],
+                     3:[-1.0, 0.0], 8:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)], 1:[math.cos(8.0 * math.pi / 6.0), math.sin(8.0 * math.pi / 6.0)],
+                     6:[0.0, -1.0], 11:[math.cos(10.0 * math.pi / 6.0), math.sin(10.0 * math.pi / 6.0)], 4:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)]}
+    minor_thirds_lookup = {3:[1.0, 0.0], 7:[1.0, 0.0], 11:[1.0, 0.0],
+                           0:[0.0, 1.0], 4:[0.0, 1.0], 8:[0.0, 1.0],
+                           1:[-1.0, 0.0], 5:[-1.0, 0.0], 9:[-1.0, 0.0],
+                           2:[0.0, -1.0], 6:[0.0, -1.0], 10:[0.0, -1.0]}
+    major_thirds_lookup = {0:[0.0, 1.0], 3:[0.0, 1.0], 6:[0.0, 1.0], 9:[0.0, 1.0],
+                           2:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)], 5:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)], 8:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)], 11:[math.cos(7.0 * math.pi / 6.0), math.sin(7.0 * math.pi / 6.0)],
+                           1:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)], 4:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)], 7:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)], 10:[math.cos(11.0 * math.pi / 6.0), math.sin(11.0 * math.pi / 6.0)]}
 
-#     fifths = [0.0, 0.0]
-#     minor = [0.0, 0.0]
-#     major = [0.0, 0.0]
-#     r1 =1
-#     r2 =1
-#     r3 = 0.5
-#     if notes:
-#         for note in notes:
-#             for i in range(2):
-#                 fifths[i] += r1 * fifths_lookup[note][i]
-#                 minor[i] += r2 * minor_thirds_lookup[note][i]
-#                 major[i] += r3 * major_thirds_lookup[note][i]
-#         for i in range(2):
-#             fifths[i] /= len(notes)
-#             minor[i] /= len(notes)
-#             major[i] /= len(notes)
+    fifths = [0.0, 0.0]
+    minor = [0.0, 0.0]
+    major = [0.0, 0.0]
+    r1 =1
+    r2 =1
+    r3 = 0.5
+    if notes:
+        for note in notes:
+            for i in range(2):
+                fifths[i] += r1 * fifths_lookup[note][i]
+                minor[i] += r2 * minor_thirds_lookup[note][i]
+                major[i] += r3 * major_thirds_lookup[note][i]
+        for i in range(2):
+            fifths[i] /= len(notes)
+            minor[i] /= len(notes)
+            major[i] /= len(notes)
 
-#     return fifths + minor + major
+    return fifths + minor + major
 
-# def softmax(x):
-#     return np.exp(x) / np.sum(np.exp(x), axis=0)
+def softmax(x):
+    return np.exp(x) / np.sum(np.exp(x), axis=0)
 
-# #
-# def neg_dist(x, y):
-#     dis = 0
-#     for i, j in zip(x, y):
-#         dis += math.pow(i-j, 2)
-#     return -math.sqrt(dis)
+def neg_dist(x, y):
+    dis = 0
+    for i, j in zip(x, y):
+        dis += math.pow(i-j, 2)
+    return -math.sqrt(dis)
 
 ## Profile function
 class contour_type():
