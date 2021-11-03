@@ -8,11 +8,11 @@ from tqdm import tqdm
 from constants import Constants
 import torch
 from torch.utils.data import Dataset
-from utils.utils import pianoroll_to_index, index_to_onehot
 
 class HLSDDataset(Dataset):
 
-    def __init__(self, data_path = "datasets", 
+    def __init__(self, data_path = "datasets",
+                       save_path = "datasets/arranged_data",
                        surprise=False, 
                        chord_simplify=False, 
                        beat_resolution=24, 
@@ -20,6 +20,10 @@ class HLSDDataset(Dataset):
                        num_note_per_octave=12):
         
         # Settings
+        self.save_path = save_path
+        if not os.path.exists(self.save_path):
+            os.mkdir(self.save_path)
+
         self.chord_simplify = chord_simplify
         self.surprise = surprise
         self.beat_per_chord = beat_per_chord
@@ -146,30 +150,13 @@ class HLSDDataset(Dataset):
             self.chord_pianoroll[i] = np.pad(self.chord_pianoroll[i], ((0, self.max_chord_len - self.chord_pianoroll[i].shape[0]), (0, 0)), constant_values = (0, 0))
 
         # Convert all lists to np arrays
-        print("Converting data to np array...\n")
+        print("Converting json data to np array...\n")
         self.melody_pianoroll = np.asarray(self.melody_pianoroll)
         self.chord_pianoroll = np.asarray(self.chord_pianoroll)
         self.seq_length = np.asarray(self.seq_length)
 
-        # Convert pianoroll melody to 12 onehots melody 
-        melody_onehots = []
-        print("Convert pianoroll melody to 12 onehots...")
-        for song in tqdm(self.melody_pianoroll, dynamic_ncols=True):
-            number_song = []
-            for frame in song:
-                number = pianoroll_to_index(frame)
-                embedding = index_to_onehot(number)
-                number_song.append(embedding)
-            melody_onehots.append(number_song)
-
-        melody_onehots = np.asarray(melody_onehots)
-    
         print("Data dimension:")
         print("melody_pianoroll:", self.melody_pianoroll.shape)
-        print('Shape of melody onehots:', melody_onehots.shape)
-        melody_onehots = melody_onehots.reshape((-1, self.max_chord_len, self.num_note_per_octave * self.beat_resolution * self.beat_per_chord))
-
-        print('Reshape melody onehot in beat unit:', melody_onehots.shape)
         print("chord_pianoroll:", self.chord_pianoroll.shape)
         print("seq_length:", len(self.seq_length))
         print("tempos:", len(self.tempos))
@@ -183,6 +170,29 @@ class HLSDDataset(Dataset):
         if self.chord_simplify:
             # Symbol chord data to onehots for 96 chords
             self.chord_indices_96, self.chord_onehots_96, self.chord_weights_96 = self.symbol_to_96_onehots()
+
+        from utils.utils import pianoroll_to_index, index_to_onehot
+
+        # Convert pianoroll melody to 12 onehots melody 
+        melody_onehots = []
+        print("Converting pianoroll melody to 12 onehots...")
+        for song in tqdm(self.melody_pianoroll, dynamic_ncols=True):
+            number_song = []
+            for frame in song:
+                number = pianoroll_to_index(frame)
+                embedding = index_to_onehot(number)
+                number_song.append(embedding)
+            melody_onehots.append(number_song)
+
+        melody_onehots = np.asarray(melody_onehots)
+
+        print('Shape of melody onehots:', melody_onehots.shape)
+        melody_onehots = melody_onehots.reshape((-1, self.max_chord_len, self.num_note_per_octave * self.beat_resolution * self.beat_per_chord))
+        
+        if not os.path.exists(os.path.join(self.save_path, "melody_onehots.npy")):
+            np.save(os.path.join(self.save_path, "melody_onehots.npy"), melody_onehots)
+
+        print('Reshape melody onehot in beat unit:', melody_onehots.shape)
 
     def __getitem__(self, index):
         chord_onehots = torch.from_numpy(self.chord_onehots[index]).float()
@@ -317,11 +327,13 @@ class HLSDDataset(Dataset):
         # Pad 0 to the positions if the length of sequence is smaller than max length 
         symbol_to_indices = dict(zip(all_chords,[i for i in range(self.all_num_chords)]))
         indices_to_symbol = dict(zip([i for i in range(self.all_num_chords)], all_chords))
+
         # Save indices to symbol pairs
-        print("Saving indices_to_symbol.pkl...")
-        f = open('./utils/indices_to_symbol.pkl' , 'wb')
-        pickle.dump(indices_to_symbol, f)
-        f.close()
+        if not os.path.exists(os.path.join(self.save_path, "indices_to_symbol.pkl")):
+            print("Saving indices_to_symbol.pkl...")
+            f = open(os.path.join(self.save_path, "indices_to_symbol.pkl") , 'wb')
+            pickle.dump(indices_to_symbol, f)
+            f.close()
 
         # Converting symbol
         print("Converting symbol to indices and onehots for all chord types...")
@@ -374,10 +386,11 @@ class HLSDDataset(Dataset):
         symbol_and_fingerring = dict(zip(all_chords, uniq_fingerring))
 
         ## Save symbol and fingerring pairs
-        print("Saving symbol_and_fingerring.pkl...")
-        f = open('./utils/symbol_and_fingerring.pkl' , 'wb')
-        pickle.dump(symbol_and_fingerring, f)
-        f.close()
+        if not os.path.exists(os.path.join(self.save_path, "symbol_and_fingerring.pkl")):
+            print("Saving symbol_and_fingerring.pkl...")
+            f = open(os.path.join(self.save_path, "symbol_and_fingerring.pkl") , 'wb')
+            pickle.dump(symbol_and_fingerring, f)
+            f.close()
 
         # Chord weight
         print("Calculate weight for all chords...")

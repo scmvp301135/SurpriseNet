@@ -4,12 +4,12 @@ import pickle
 import torch
 
 # Load symbol_and_fingerring data
-f = open('./utils/symbol_and_fingerring.pkl', 'rb')
+f = open('./datasets/arranged_data/symbol_and_fingerring.pkl', 'rb')
 symbol_and_fingerring = pickle.load(f)
 f.close()
 
 # Load symbol_and_fingerring data
-f = open('./utils/indices_to_symbol.pkl', 'rb')
+f = open('./datasets/arranged_data/indices_to_symbol.pkl', 'rb')
 INDICES_TO_SYMBOL = pickle.load(f)
 
 INDICES_TO_PIANOROLL = list(symbol_and_fingerring.values())
