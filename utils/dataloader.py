@@ -5,7 +5,6 @@ import pickle
 import json
 import math
 from tqdm import tqdm
-from constants import Constants
 import torch
 from torch.utils.data import Dataset
 
@@ -13,8 +12,9 @@ class HLSDDataset(Dataset):
 
     def __init__(self, data_path = "datasets",
                        save_path = "datasets/arranged_data",
-                       surprise=False, 
+                       input_surprise=False, 
                        chord_simplify=False, 
+                       simplified_num_chords=96,
                        beat_resolution=24, 
                        beat_per_chord=2,
                        num_note_per_octave=12):
@@ -25,7 +25,8 @@ class HLSDDataset(Dataset):
             os.mkdir(self.save_path)
 
         self.chord_simplify = chord_simplify
-        self.surprise = surprise
+        self.simplified_num_chords = simplified_num_chords
+        self.input_surprise = input_surprise
         self.beat_per_chord = beat_per_chord
         self.beat_resolution = beat_resolution
         self.num_note_per_octave = num_note_per_octave
@@ -73,7 +74,7 @@ class HLSDDataset(Dataset):
                         chord_list = []
                         for i in range(chord.pianoroll.shape[0]):
                             # Get chord per 2 beats 
-                            if i % (Constants.BEAT_RESOLUTION * Constants.BEAT_PER_CHORD) == 0:
+                            if i % (self.beat_resolution * self.beat_per_chord) == 0:
                                 chord_list.append(chord.pianoroll[i])
 
                         # Chord to numpy
@@ -158,7 +159,7 @@ class HLSDDataset(Dataset):
         print("Data dimension:")
         print("melody_pianoroll:", self.melody_pianoroll.shape)
         print("chord_pianoroll:", self.chord_pianoroll.shape)
-        print("seq_length:", len(self.seq_length))
+        print("number of seq_length:", len(self.seq_length))
         print("tempos:", len(self.tempos))
         print("downbeats:", len(self.downbeats))
         print("symbols:", len(self.symbols), "\n")
@@ -198,13 +199,13 @@ class HLSDDataset(Dataset):
         chord_onehots = torch.from_numpy(self.chord_onehots[index]).float()
         length = torch.from_numpy(self.seq_length[index]).float()
         melody = torch.from_numpy(self.melody[index]).float()
-        surprise = torch.from_numpy(self.surprise[index]).float()
+        surprise = torch.from_numpy(self.surprise_contours[index]).float()
         chord_indices = torch.from_numpy(self.chord_index[index]).float()
         
         return chord_onehots, length, melody, surprise, chord_indices
 
     def __len__(self):
-        return (self.melody.shape[0])
+        return (self.melody_pianoroll.shape[0])
 
     # Calculate balancing weight array
     def cal_weight(self, weight):
@@ -294,16 +295,16 @@ class HLSDDataset(Dataset):
 
         # Pad 0 to the positions if the length of sequence is smaller than max length   
         for i in range(len(index_96)):
-            index_96[i] = np.pad(index_96[i], ((0, Constants.MAX_SEQUENCE_LENGTH - index_96[i].shape[0]), (0, 0)), constant_values = (0, 0))
+            index_96[i] = np.pad(index_96[i], ((0, self.max_chord_len - index_96[i].shape[0]), (0, 0)), constant_values = (0, 0))
         index_96 = np.asarray(index_96)
 
         for i in range(len(onehot_96)):
-            onehot_96[i] = np.pad(onehot_96[i], ((0, Constants.MAX_SEQUENCE_LENGTH - onehot_96[i].shape[0]), (0, 0)), constant_values = (0, 0))
+            onehot_96[i] = np.pad(onehot_96[i], ((0, self.max_chord_len - onehot_96[i].shape[0]), (0, 0)), constant_values = (0, 0))
         onehot_96 = np.asarray(onehot_96)
 
         # Chord weight
         print("Calculate weight for 96 chords...")
-        weight_96 = self.chord_weight(index_96, Constants.NUM_CHORDS)
+        weight_96 = self.chord_weight(index_96, self.simplified_num_chords)
 
         # Print shape
         print("shape of indices for 96 chord symbols:", index_96.shape)
@@ -343,13 +344,13 @@ class HLSDDataset(Dataset):
             chord_indices.append(np.asarray(chord_index))
 
         for i in range(len(chord_indices)):
-            chord_indices[i] = np.pad(chord_indices[i], (0, Constants.MAX_SEQUENCE_LENGTH - chord_indices[i].shape[0]), constant_values = 0)
+            chord_indices[i] = np.pad(chord_indices[i], (0, self.max_chord_len - chord_indices[i].shape[0]), constant_values = 0)
             
         chord_indices = np.expand_dims(np.asarray(chord_indices), -1)
         chord_indices = chord_indices.astype(int)
 
         # Chord indices to onehot
-        chord_onehots = np.zeros((chord_indices.shape[0], Constants.MAX_SEQUENCE_LENGTH, self.all_num_chords))
+        chord_onehots = np.zeros((chord_indices.shape[0], self.max_chord_len, self.all_num_chords))
 
         for i in range(chord_indices.shape[0]):
             for t in range(self.seq_length[i]):
