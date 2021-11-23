@@ -1,0 +1,27 @@
+# Datasets
+beat_per_chord: 2
+chords_per_bar: 2
+# 96 simplified chords
+simplified_num_chords: 96
+bars_per_conductor: 8
+beat_resolution: 24
+max_sequence_length: 272
+
+# Training and optimization 
+optim: adam
+lr: 5e-4
+k: 0
+step: 5
+epochs: 10
+batch_size: 4
+max_norm: 5
+
+# Models
+model: !new:surprisenet.model.cvae.SurpriseNet
+  encoder_hidden_size: 1024
+  decoder_hidden_size: 1024
+  latent_size: 64 
+  encoder_num_layers: 2 
+  decoder_num_layers: 2 
+  prenet_size: 256
+  prenet_num_layers: 2 
