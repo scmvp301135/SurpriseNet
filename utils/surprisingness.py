@@ -1,4 +1,7 @@
-# Author: Yi Wei Chen
+"""
+Author
+    * Yi Wei Chen 2021
+"""
 
 import numpy as np
 from tqdm import tqdm

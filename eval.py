@@ -1,3 +1,8 @@
+"""
+Author
+    * Yi Wei Chen 2021
+"""
+
 import argparse
 from tqdm import tqdm
 import numpy as np

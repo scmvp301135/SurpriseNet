@@ -1,3 +1,9 @@
+"""
+Author
+    * Chung En Sun 2020
+    * Yi Wei Chen 2021
+"""
+
 import math
 import numpy as np
 

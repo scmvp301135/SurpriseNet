@@ -1,37 +1,24 @@
-import argparse
+"""
+Author
+    * Yi Wei Chen 2021
+"""
+
 import numpy as np
-from tqdm import tqdm
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import random
+from tqdm import tqdm
+from hyperpyyaml import load_hyperpyyaml
 from utils.dataloader import HLSDDataset
 from model.CVAE import CVAE, MusicCVAE, SurpriseNet
 from sklearn.metrics import accuracy_score
 
 class TrainingCVAE():
     def __init__(self, args, step=0, k=0.0025, x0=2500):
-        
-        self.batch_size = args.batch_size
-        self.val_size = args.val_size
-        self.epoch = args.epoch
-        self.learning_rate = args.learning_rate
-        self.cuda = args.cuda
-        self.device = torch.device('cuda:' + self.cuda) if torch.cuda.is_available() else 'cpu'
-        self.step = step
-        self.k = k
-        self.x0 = x0
-        self.training_loss = 0
-        self.validation_loss = 0
-        self.save_model = args.save_model
-        self.weight = args.weight
-        self.latent_size_factor = args.latent_size_factor
-        self.hidden_size_factor = args.hidden_size_factor
-        self.num_layers_factor = args.num_layers_factor
-        self.input_surprise = args.input_surprise
+        self.args = args
         
     # Loss function
     def loss_fn(self,loss_function, logp, target, length, mean, log_var, anneal_function, step, k, x0):
@@ -48,7 +35,7 @@ class TrainingCVAE():
     # Annealing function 
     def kl_anneal_function(self,anneal_function, step, k, x0):
             if anneal_function == 'logistic':
-                return float(1/(1+np.exp(-k*(step-x0))))
+                return float(1 / (1 + np.exp(-k * (step - x0))))
             elif anneal_function == 'linear':
                 return min(1, step/x0) 
 
@@ -133,6 +120,7 @@ class TrainingCVAE():
 
             print('training_loss: ', training_loss / (17505 // self.batch_size))
 
+
     def eval(self, model, dataloader, step, k, x0, loss_function):
         ########## Evaluation mode ###########
             model.eval()
@@ -181,22 +169,20 @@ class TrainingCVAE():
     # Model training  
     def run(self):
         
-        epochs = self.epoch
         # Load data
         train_dataloader, valid_dataloader = self.load_data()
 
         # Model
         print('building model...')
-        model = CVAE(device = self.device,
-                     hidden_size_factor = self.hidden_size_factor,
-                     num_layers_factor = self.num_layers_factor,
-                     latent_size_factor = self.latent_size_factor).to(self.device)
+        kwargs = dict(self.args.model)
+        model = CVAE(**kwargs).to(self.device)
         print(model)
 
         # Training parameters
         optimizer = optim.Adam(model.parameters(), lr=self.learning_rate)
         lambda1 = lambda epoch: 0.995 ** epoch
         scheduler = optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda1)
+
         if self.weight:
             self.weight = weight_chord
         loss_function = torch.nn.NLLLoss(weight = self.weight)
@@ -207,55 +193,38 @@ class TrainingCVAE():
         x0 = self.x0
         
         print('start training...')
-        for epoch in tqdm(range(epochs)):
+        for epoch in tqdm(range(self.epoch)):
             print('epoch: ', epoch + 1)
             
             self.train(model,
                        optimizer,
-                       dataloader,
-                       step,k,x0,
+                       train_dataloader,
+                       step,
+                       k,
+                       x0,
                        loss_function
                       )
             
             self.eval(model,
-                      val_melody,
-                      val_chord_onehot,
-                      val_length,
-                      step,k,x0,
+                      valid_dataloader,
+                      step,
+                      k,
+                      x0,
                       loss_function
                      )
-
-        # Save recontructed results
-        # np.save('reconstructed_one_hot_chords.npy', chord_pred.cpu().detach().numpy()) 
 
         # Save model
         model_dir = 'output_models/' + self.save_model
         torch.save(model.state_dict(), model_dir + '.pth')
 
-## Main
+
 def main():
-    ''' 
-    Usage:
-    python train.py -save_model "/output_models/"
-    '''
 
-    parser = argparse.ArgumentParser(description='Set configs to training process.') 
-
-    parser.add_argument('-learning_rate', type=float, default=0.001)   
-    parser.add_argument('-val_size', default=500)    
-    parser.add_argument('-epoch', type=int, default=10)
-    parser.add_argument('-batch_size', type=int, default=512)
-    parser.add_argument('-save_model', type=str, default="output_models/")
-    parser.add_argument('-cuda', type=str, default='0')
-    parser.add_argument('-weight', type=bool, default=None)
-    parser.add_argument('-latent_size_factor', type=int, default=1)
-    parser.add_argument('-hidden_size_factor', type=int, default=1)
-    parser.add_argument('-num_layers_factor', type=int, default=1)
-    parser.add_argument('-input_surprise', type=bool, default=False)
+    # Load hyperparameters file with command-line overrides
+    with open(hparams_file) as fin:
+        hparams = load_hyperpyyaml(fin, overrides)
     
-    args = parser.parse_args()
-    
-    train = TrainingCVAE(args)
+    train = TrainingCVAE(hparams)
     train.run()
     
 if __name__ == '__main__':

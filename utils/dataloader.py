@@ -1,9 +1,13 @@
+"""
+Author
+    * Yi Wei Chen 2021
+"""
+
 import os
 import numpy as np
 import pypianoroll as pr
 import pickle
 import json
-import math
 from tqdm import tqdm
 import torch
 from torch.utils.data import Dataset
@@ -13,10 +17,10 @@ class HLSDDataset(Dataset):
     def __init__(self, data_path = "datasets",
                        save_path = "datasets/arranged_data",
                        input_surprise=False, 
-                       chord_simplify=False, 
+                       simplify_chord=False, 
                        simplified_num_chords=96,
                        beat_resolution=24, 
-                       beat_per_chord=2,
+                       beats_per_chord=2,
                        num_note_per_octave=12):
         
         # Settings
@@ -24,10 +28,10 @@ class HLSDDataset(Dataset):
         if not os.path.exists(self.save_path):
             os.mkdir(self.save_path)
 
-        self.chord_simplify = chord_simplify
+        self.simplify_chord = simplify_chord
         self.simplified_num_chords = simplified_num_chords
         self.input_surprise = input_surprise
-        self.beat_per_chord = beat_per_chord
+        self.beats_per_chord = beats_per_chord
         self.beat_resolution = beat_resolution
         self.num_note_per_octave = num_note_per_octave
 
@@ -38,9 +42,9 @@ class HLSDDataset(Dataset):
         self.seq_length = []
         self.tempos = []
         self.downbeats = []
-        self.max_melody_len = 0
-        self.max_chord_len = 0
-        self.all_num_chords = 0
+        self.max_melody_length = 0
+        self.max_chord_length = 0
+        self.total_num_chords = 0
         
         # Converted data
         self.melody_aligned = []
@@ -67,21 +71,21 @@ class HLSDDataset(Dataset):
                         melody = midi.tracks[0]
 
                         # Get the max length of the melody sequence
-                        self.max_melody_len = max(self.max_melody_len, melody.pianoroll.shape[0])
+                        self.max_melody_length = max(self.max_melody_length, melody.pianoroll.shape[0])
 
                         # Extract chord
                         chord = midi.tracks[1]
                         chord_list = []
                         for i in range(chord.pianoroll.shape[0]):
                             # Get chord per 2 beats 
-                            if i % (self.beat_resolution * self.beat_per_chord) == 0:
+                            if i % (self.beat_resolution * self.beats_per_chord) == 0:
                                 chord_list.append(chord.pianoroll[i])
 
                         # Chord to numpy
                         chord_np = np.asarray(chord_list)
 
                         # Get the max length of the chord sequence
-                        self.max_chord_len = max(self.max_chord_len, chord_np.shape[0])
+                        self.max_chord_length = max(self.max_chord_length, chord_np.shape[0])
 
                         # Gather all data to a big list
                         self.melody_pianoroll.append(melody.pianoroll)
@@ -144,11 +148,11 @@ class HLSDDataset(Dataset):
 
         # Pad 0 to the positions if the length of melody sequence is smaller than max length                    
         for i in tqdm(range(len(self.melody_pianoroll)), dynamic_ncols=True):
-            self.melody_pianoroll[i] = np.pad(self.melody_pianoroll[i], ((0, self.max_melody_len - self.melody_pianoroll[i].shape[0]), (0, 0)), constant_values = (0, 0))
+            self.melody_pianoroll[i] = np.pad(self.melody_pianoroll[i], ((0, self.max_melody_length - self.melody_pianoroll[i].shape[0]), (0, 0)), constant_values = (0, 0))
 
         # Pad 0 to the positions if the length of chord sequence is smaller than max length               
         for i in tqdm(range(len(self.chord_pianoroll)), dynamic_ncols=True):
-            self.chord_pianoroll[i] = np.pad(self.chord_pianoroll[i], ((0, self.max_chord_len - self.chord_pianoroll[i].shape[0]), (0, 0)), constant_values = (0, 0))
+            self.chord_pianoroll[i] = np.pad(self.chord_pianoroll[i], ((0, self.max_chord_length - self.chord_pianoroll[i].shape[0]), (0, 0)), constant_values = (0, 0))
 
         # Convert all lists to np arrays
         print("Converting json data to np array...\n")
@@ -157,18 +161,18 @@ class HLSDDataset(Dataset):
         self.seq_length = np.asarray(self.seq_length)
 
         print("Data dimension:")
-        print("melody_pianoroll:", self.melody_pianoroll.shape)
-        print("chord_pianoroll:", self.chord_pianoroll.shape)
+        print("shape of melody_pianoroll:", self.melody_pianoroll.shape)
+        print("shape of chord_pianoroll:", self.chord_pianoroll.shape)
         print("number of seq_length:", len(self.seq_length))
-        print("tempos:", len(self.tempos))
-        print("downbeats:", len(self.downbeats))
-        print("symbols:", len(self.symbols), "\n")
+        print("number of tempos:", len(self.tempos))
+        print("number of downbeats:", len(self.downbeats))
+        print("number of symbols:", len(self.symbols), "\n")
 
         print("Converting symbol data...")
         # Symbol chord data to onehots for all chords
         self.chord_indices, self.chord_onehots, self.chord_weights = self.symbol_to_all_onehots()
 
-        if self.chord_simplify:
+        if self.simplify_chord:
             # Symbol chord data to onehots for 96 chords
             self.chord_indices_96, self.chord_onehots_96, self.chord_weights_96 = self.symbol_to_96_onehots()
 
@@ -188,7 +192,7 @@ class HLSDDataset(Dataset):
         melody_onehots = np.asarray(melody_onehots)
 
         print('Shape of melody onehots:', melody_onehots.shape)
-        melody_onehots = melody_onehots.reshape((-1, self.max_chord_len, self.num_note_per_octave * self.beat_resolution * self.beat_per_chord))
+        melody_onehots = melody_onehots.reshape((-1, self.max_chord_length, self.num_note_per_octave * self.beat_resolution * self.beats_per_chord))
         
         if not os.path.exists(os.path.join(self.save_path, "melody_onehots.npy")):
             np.save(os.path.join(self.save_path, "melody_onehots.npy"), melody_onehots)
@@ -295,11 +299,11 @@ class HLSDDataset(Dataset):
 
         # Pad 0 to the positions if the length of sequence is smaller than max length   
         for i in range(len(index_96)):
-            index_96[i] = np.pad(index_96[i], ((0, self.max_chord_len - index_96[i].shape[0]), (0, 0)), constant_values = (0, 0))
+            index_96[i] = np.pad(index_96[i], ((0, self.max_chord_length - index_96[i].shape[0]), (0, 0)), constant_values = (0, 0))
         index_96 = np.asarray(index_96)
 
         for i in range(len(onehot_96)):
-            onehot_96[i] = np.pad(onehot_96[i], ((0, self.max_chord_len - onehot_96[i].shape[0]), (0, 0)), constant_values = (0, 0))
+            onehot_96[i] = np.pad(onehot_96[i], ((0, self.max_chord_length - onehot_96[i].shape[0]), (0, 0)), constant_values = (0, 0))
         onehot_96 = np.asarray(onehot_96)
 
         # Chord weight
@@ -321,13 +325,13 @@ class HLSDDataset(Dataset):
             all_chords += chord
 
         all_chords = sorted(list(set(all_chords)))
-        self.all_num_chords = len(all_chords)
-        print("Total chord numbers:", self.all_num_chords)
+        self.total_num_chords = len(all_chords)
+        print("Total number of chords:", self.total_num_chords)
 
         # Chord symbol to indices
         # Pad 0 to the positions if the length of sequence is smaller than max length 
-        symbol_to_indices = dict(zip(all_chords,[i for i in range(self.all_num_chords)]))
-        indices_to_symbol = dict(zip([i for i in range(self.all_num_chords)], all_chords))
+        symbol_to_indices = dict(zip(all_chords,[i for i in range(self.total_num_chords)]))
+        indices_to_symbol = dict(zip([i for i in range(self.total_num_chords)], all_chords))
 
         # Save indices to symbol pairs
         if not os.path.exists(os.path.join(self.save_path, "indices_to_symbol.pkl")):
@@ -344,13 +348,13 @@ class HLSDDataset(Dataset):
             chord_indices.append(np.asarray(chord_index))
 
         for i in range(len(chord_indices)):
-            chord_indices[i] = np.pad(chord_indices[i], (0, self.max_chord_len - chord_indices[i].shape[0]), constant_values = 0)
+            chord_indices[i] = np.pad(chord_indices[i], (0, self.max_chord_length - chord_indices[i].shape[0]), constant_values = 0)
             
         chord_indices = np.expand_dims(np.asarray(chord_indices), -1)
         chord_indices = chord_indices.astype(int)
 
         # Chord indices to onehot
-        chord_onehots = np.zeros((chord_indices.shape[0], self.max_chord_len, self.all_num_chords))
+        chord_onehots = np.zeros((chord_indices.shape[0], self.max_chord_length, self.total_num_chords))
 
         for i in range(chord_indices.shape[0]):
             for t in range(self.seq_length[i]):
@@ -395,7 +399,7 @@ class HLSDDataset(Dataset):
 
         # Chord weight
         print("Calculate weight for all chords...")
-        chord_weights = self.chord_weight(chord_indices, self.all_num_chords)
+        chord_weights = self.chord_weight(chord_indices, self.total_num_chords)
 
         # Print shape
         print("shape of indices for all chords", chord_indices.shape)
