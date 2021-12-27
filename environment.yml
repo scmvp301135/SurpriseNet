@@ -21,3 +21,5 @@ dependencies:
     - bs4
     - xmltodict
     - lxml
+    - pyyaml
+    - sklearn

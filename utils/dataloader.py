@@ -390,7 +390,7 @@ class HLSDDataset(Dataset):
 
         symbol_and_fingerring = dict(zip(all_chords, uniq_fingerring))
 
-        ## Save symbol and fingerring pairs
+        # Save symbol and fingerring pairs
         if not os.path.exists(os.path.join(self.save_path, "symbol_and_fingerring.pkl")):
             print("Saving symbol_and_fingerring.pkl...")
             f = open(os.path.join(self.save_path, "symbol_and_fingerring.pkl") , 'wb')

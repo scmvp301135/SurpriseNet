@@ -11,7 +11,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from tqdm import tqdm
-from hyperpyyaml import load_hyperpyyaml
 from utils.dataloader import HLSDDataset
 from model.CVAE import CVAE, MusicCVAE, SurpriseNet
 from sklearn.metrics import accuracy_score
@@ -71,7 +70,7 @@ class TrainingCVAE():
             model.train()
             training_loss = self.training_loss
 
-            for chord_onehots, length, melody, surprise, chord_indices in dataloader:
+            for idx, (chord_onehots, length, melody, surprise, chord_indices) in enumerate(dataloader):
 
                 # melody (512, 272, 12 * 24 * 2)
                 # chord (512, 272, 1) 
@@ -79,8 +78,7 @@ class TrainingCVAE():
                 # chord_onehot (512, 272, 96)
         
                 melody, length, chord_onehots = melody.to(self.device), length.to(self.device).squeeze(), chord_onehots.to(self.device)
-                optimizer.zero_grad()
-
+         
                 # Model prediction
                 if self.input_surprise:
                     pred, logp ,mu, log_var, _ = model(chord_onehots, length, melody, surprise)
@@ -110,15 +108,16 @@ class TrainingCVAE():
                 pred_flatten = torch.cat(pred_flatten, dim=0)
 
                 # Loss calculation
-                NLL_loss, KL_loss, KL_weight = self.loss_fn(loss_function = loss_function, logp = logp_flatten, target = chord_indices, length = length, mean = mu, log_var = log_var, anneal_function='logistic', step=step, k=k, x0=x0)
+                NLL_loss, KL_loss, KL_weight = self.loss_fn(loss_function=loss_function, logp=logp_flatten, target=chord_indices, length=length, mean=mu, log_var=log_var, anneal_function='logistic', step=step, k=k, x0=x0)
                 self.step += 1
                 loss = (NLL_loss + KL_weight * KL_loss)
                 training_loss += loss.item()
 
                 loss.backward()
                 optimizer.step()
+                optimizer.zero_grad()
 
-            print('training_loss: ', training_loss / (17505 // self.batch_size))
+            print('training_loss: ', training_loss / (idx + 1))
 
 
     def eval(self, model, dataloader, step, k, x0, loss_function):
@@ -164,11 +163,10 @@ class TrainingCVAE():
                 validation_loss += loss.item()
 
                 print('validation_loss: ', validation_loss)
-                self.cal_reconstruction_rate(groundtruth_index.cpu(),pred_index.cpu())
+                self.cal_reconstruction_rate(groundtruth_index.cpu(), pred_index.cpu())
 
     # Model training  
     def run(self):
-        
         # Load data
         train_dataloader, valid_dataloader = self.load_data()
 
@@ -182,10 +180,7 @@ class TrainingCVAE():
         optimizer = optim.Adam(model.parameters(), lr=self.learning_rate)
         lambda1 = lambda epoch: 0.995 ** epoch
         scheduler = optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda1)
-
-        if self.weight:
-            self.weight = weight_chord
-        loss_function = torch.nn.NLLLoss(weight = self.weight)
+        loss_function = torch.nn.NLLLoss(weight=self.weight)
 
         # Define annealing parameters
         step = self.step
@@ -219,12 +214,20 @@ class TrainingCVAE():
 
 
 def main():
+    import argparse
+    import yaml
+    
+    parser = argparse.ArgumentParser("surprisenet", description="Train and evaluate surprisenet.")
+    parser.add_argument("--config", type=str, help="configuration of the experiment", default="hparams/cvae.yaml")
+
+    opt = parser.parse_args()
+    hparams_file = opt.config
 
     # Load hyperparameters file with command-line overrides
-    with open(hparams_file) as fin:
-        hparams = load_hyperpyyaml(fin, overrides)
+    with open(hparams_file) as f:
+        conf = yaml.safe_load(f)
     
-    train = TrainingCVAE(hparams)
+    train = TrainingCVAE(conf)
     train.run()
     
 if __name__ == '__main__':

@@ -1,11 +1,23 @@
+# Experiment storage
+experiment_name: cvae
+output_folder: results/<experiment_name>
+save_results: <output_folder>/generated_results
+
 # Datasets
-beat_per_chord: 2
+data_path: datasets
+save_path: <data_path>/arraged_dataset
+
+input_surprise: False
+simplify_chord: False
+
+beats_per_chord: 2
 chords_per_bar: 2
-# 96 simplified chords
+num_notes_per_octave: 12
+octaves: 2
 simplified_num_chords: 96
 bars_per_conductor: 8
 beat_resolution: 24
-max_sequence_length: 272
+melody_dim: 576 # <beat_resolution> * <octaves> * <num_notes_per_octave>
 
 # Training and optimization 
 optim: adam
@@ -17,13 +29,16 @@ batch_size: 4
 max_norm: 5
 
 # Models
-model: !new:surprisenet.model.cvae.CVAE
+model: cvae
+cvae: 
+  melody_dim: <melody_dim>
   encoder_hidden_size: 256 
   decoder_hidden_size: 256 
   latent_size: 16 
   encoder_num_layers: 2 
   decoder_num_layers: 2 
-  prenet_size: 256
-  prenet_num_layers: 2 
-  
+  bidirectional: True
+  dropout: 0.2
+
+
 
