@@ -1,3 +1,8 @@
+"""
+Author
+    * Yi Wei Chen 2021
+"""
+
 from tqdm import tqdm
 from tonal import pianoroll2number, joint_prob2pianoroll96
 import numpy as np

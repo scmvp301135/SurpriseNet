@@ -1,5 +1,5 @@
 # Datasets
-beat_per_chord: 2
+beats_per_chord: 2
 chords_per_bar: 2
 # 96 simplified chords
 simplified_num_chords: 96

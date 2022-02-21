@@ -180,7 +180,7 @@ class MusicCVAE(nn.Module):
                     
                     counter += 1
         # Softmax
-        softmax = F.softmax(output_chord_seqs,dim=-1)
+        softmax = F.softmax(output_chord_seqs, dim=-1)
         
         return output_chord_seqs, softmax
 

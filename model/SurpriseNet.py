@@ -117,7 +117,7 @@ class CVAE(nn.Module):
         
         return result, softmax
     
-    def forward(self,inputs):
+    def forward(self, inputs):
         
         if self.model_type == 'SurpriseNet':
             
