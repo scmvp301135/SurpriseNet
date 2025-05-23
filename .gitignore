@@ -2,4 +2,4 @@
 *.pyc
 
 # My configurations:
-static/media/*.mp4
+# static/media/*.mp4
