@@ -1,42 +1,66 @@
-# Python:
-*.pyc
+# Python bytecode and tooling
+__pycache__/
+*.py[cod]
+.coverage
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 
-# My configurations:
-# static/media/*.mp4
-
-# macOS system files
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Windows system files
-Thumbs.db
-Desktop.ini
-
-# Vim/Emacs/VSCode/JetBrains editors
-*~
-*.swp
-*.swo
-*.swn
-*.bak
-*.tmp
-*.temp
-*.orig
-*.vscode/
-.idea/
-
-# Python virtualenv
+# Local environments and secrets
+.env
+.env.*
+!.env.example
 .venv/
 venv/
 
-# Jupyter Notebook checkpoints
-.ipynb_checkpoints/
+# Training datasets and generated artifacts
+data/
+datasets/
+metrics/
+output/
+output_models/
+results/
+*.ckpt
+*.npy
+*.npz
+*.pkl
+*.pt
+*.pth
+*.tar
+*.tar.gz
+*.tgz
+*.zip
 
-# Log files
+# Notebook output and local caches
+.ipynb_checkpoints/
+*.cache
 *.log
 
-# Other common temp files
-*.cache
+# JavaScript dependencies and build output
+node_modules/
+dist/
+.playwright-cli/
+
+# Editors
+.idea/
+.vscode/
+*~
+*.bak
+*.orig
+*.swp
+*.swo
+*.swn
+*.temp
+*.tmp
+
+# Operating-system files
+.AppleDouble
+.DS_Store
+.LSOverride
+Desktop.ini
+Thumbs.db
+
+# Package-manager logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
