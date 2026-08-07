@@ -1,84 +1,78 @@
 # SurpriseNet
 
-### SurpriseNet: Melody Harmonization Conditioning on User-controlled Surprise Contours
-This is the source code of SurpriseNet, a user-controlled conditional CVAE model based on user's indication to complete melody harmonization.
-Some generated samples are available at [https://scmvp301135.github.io/SurpriseNet](https://scmvp301135.github.io/SurpriseNet).
+SurpriseNet is a user-controlled conditional variational autoencoder for melody harmonization. It conditions generated chord progressions on a surprise contour selected by the listener.
 
-For more information, see our paper:
-[arXiv paper](https://arxiv.org/abs/2108.00378).
+[Web sample explorer](https://scmvp301135.github.io/SurpriseNet/) · [Paper](https://arxiv.org/abs/2108.00378) · [ISMIR 2021](https://ismir2021.ismir.net/)
 
-### Installation
-* To install SurpriseNet, clone the repo and install it using conda:
+## Web sample explorer
 
-```
-# First clone and enter the repo
-git clone https://github.com/scmvp301135/SurpriseNet.git
-cd SurpriseNet
-```
+The sample explorer is a static, precomputed listening demo under [`docs/`](docs/). It does not run SurpriseNet and does not require a backend. GitHub Pages can serve it directly. A hosted inference service such as Hugging Face Spaces would only be needed for user-submitted melodies or real-time generation.
 
-* Create environment with conda:
-```
-conda env create -f environment.yml
-conda activate surprisenet
-```
+The explorer compares:
 
-### Downloading Dataset
+- 3 melody excerpts
+- 6 user-controlled surprise contours
+- Ground truth, SurpriseNet, and Weighted SurpriseNet outputs
+- 39 audio-visual samples in total
 
-We performed experiments on the [Hooktheory Lead Sheet Dataset (HLSD)](https://github.com/wayne391/lead-sheet-dataset) , which contains high-quality and human-arranged melodies with chord progressions. The dataset is provided in two formats, event-based JSON files and MIDI files. Furthermore, there are many types of labels on chords, such as chord symbols and Roman numerals for reference. 
+Only the selected video is downloaded after the listener presses **Load and play**. The initial page load does not fetch the 51.77 MiB sample collection.
 
-‼️ We recommend downloading the prepared dataset directly from the link below, as the crawler program is not ready for the updated website.
-
-***Latest Update:***
-***Sample Dataset: 2018/8/1***
-***Source:*** [Link](https://drive.google.com/file/d/13iB5Brk1hypKsw9TSf8_d4Ka3xU0XmFZ/view?usp=sharing) (4.9 G).  
-
-* Or use wget to download  google drive files:
-```
-wget --load-cookies /tmp/cookies.txt "https://drive.google.com/u/0/uc?id=13iB5Brk1hypKsw9TSf8_d4Ka3xU0XmFZ&export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/u/0/uc?id=13iB5Brk1hypKsw9TSf8_d4Ka3xU0XmFZ&export=download&id=FILEID' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=FILEID" -O hooktheory_dataset.tar.gz && rm -rf /tmp/cookies.txt
-
-tar -xvf hooktheory_dataset.tar.gz
-```
-
-### Create surprise contours data
-
-After converting, we have to create surprise contours data and weight chord data for training as well.
-
-### Training
-All package requirements are contained in `requirements.txt`. To train the model, run:
+Run the site locally with Python:
 
 ```bash
-pip install -r requirements.txt
-python surprisenet_train.py
+python3 -m http.server 8000 --directory docs
 ```
 
-`surprisenet_train.py` is written using argparse
+Then open <http://localhost:8000>.
+
+Run the dependency-free catalog and asset checks with Node.js:
 
 ```bash
-python surprisenet_train.py with -epoch 10 -save_model model_surprisenet
+node --test tests/web-demo.test.mjs
 ```
 
-Trained models will be saved in the specified `save_model` which is a required argument.
+The Pages workflow publishes `docs/` after changes reach `master`. In the repository settings, select **GitHub Actions** as the Pages source once. A separate website branch is no longer required after this refactor is merged and the publishing source is switched.
 
-### Inference
+## Research code status
 
-All package requirements are contained in `requirements.txt`. To train the model, run:
+The model and evaluation files are retained as the original 2021 research artifact. The checked-in training pipeline is not currently maintained for modern PyTorch, Apple MPS, or current Python releases, and it is not expected to run unchanged on a modern Mac.
 
-```bash
-python surprisenet_inference.py
+The historical Conda specification is in [`environment.yml`](environment.yml). It targets Python 3.6 and requires a separately prepared Hooktheory Lead Sheet Dataset. Treat it as a record of the original environment rather than a current reproducible setup.
+
+## Dataset
+
+The experiments use the [Hooktheory Lead Sheet Dataset](https://github.com/wayne391/lead-sheet-dataset), which contains event-based JSON, MIDI files, chord symbols, and Roman-numeral labels.
+
+A prepared 4.9 GB sample dataset is available from the original [Google Drive download](https://drive.google.com/file/d/13iB5Brk1hypKsw9TSf8_d4Ka3xU0XmFZ/view?usp=sharing).
+
+Large datasets, checkpoints, NumPy arrays, and generated results are excluded by `.gitignore` so they are not accidentally added to Git history.
+
+## Repository layout
+
+```text
+docs/                 Static web sample explorer
+hparams/              Historical experiment configurations
+model/                CVAE and SurpriseNet model definitions
+tests/                Web catalog and asset checks
+utils/                Data, decoding, and evaluation utilities
+eval.py               Historical inference and evaluation entry point
+train.py              Historical training entry point
+tonal.py              Tonal-space utilities
 ```
 
-`surprisenet_inference` is also written using argparse, give `model_path` to generate chords:
+## Paper
 
-```bash
-python surprisenet_inference.py with -model_path model_surprisenet
+> Yi-Wei Chen, Hung-Shin Lee, Yen-Hsing Chen, and Hsin-Min Wang. “SurpriseNet: Melody Harmonization Conditioning on User-controlled Surprise Contours.” Proceedings of the 22nd International Society for Music Information Retrieval Conference, 2021.
+
+```bibtex
+@inproceedings{chen2021surprisenet,
+  title     = {SurpriseNet: Melody Harmonization Conditioning on User-controlled Surprise Contours},
+  author    = {Chen, Yi-Wei and Lee, Hung-Shin and Chen, Yen-Hsing and Wang, Hsin-Min},
+  booktitle = {Proceedings of the 22nd International Society for Music Information Retrieval Conference},
+  year      = {2021}
+}
 ```
 
-### Interative Demo Website
+## License
 
-Coming soon...
-
-
-
-
-
-
+This repository is distributed under the terms in [`LICENSE`](LICENSE).
