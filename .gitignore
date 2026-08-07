@@ -1,0 +1,42 @@
+# Python:
+*.pyc
+
+# My configurations:
+# static/media/*.mp4
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+
+# Vim/Emacs/VSCode/JetBrains editors
+*~
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+*.temp
+*.orig
+*.vscode/
+.idea/
+
+# Python virtualenv
+.venv/
+venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Log files
+*.log
+
+# Other common temp files
+*.cache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
