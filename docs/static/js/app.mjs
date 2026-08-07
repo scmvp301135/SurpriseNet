@@ -1,6 +1,7 @@
 import { CONTOURS, SONGS, getSampleSources } from "./catalog.mjs";
 import {
   getCanPlayStatus,
+  getLoadButtonLabel,
   hasPlayerSourceChanged,
   isPlaybackGenerationCurrent,
 } from "./player-state.mjs";
@@ -10,7 +11,6 @@ const contourSelector = document.querySelector("#contour-selector");
 const selectionContext = document.querySelector("#selection-context");
 const selectionTitle = document.querySelector("#selection-title");
 const selectionDescription = document.querySelector("#selection-description");
-const contourImage = document.querySelector("#current-contour-image");
 
 const players = [
   {
@@ -106,6 +106,20 @@ function selectContour(contourId) {
   renderSelection();
 }
 
+function setLoadButtonAction(player, action) {
+  player.loadButton.textContent = action;
+  player.loadButton.setAttribute(
+    "aria-label",
+    getLoadButtonLabel(action, player.label, player.songTitle),
+  );
+}
+
+function setPlayerRetryState(player, message) {
+  player.loadButton.hidden = false;
+  setLoadButtonAction(player, "Try loading again");
+  setStatus(player, message, "error");
+}
+
 function setPlayerSource(player, source, song, contour) {
   const { video, status, loadButton, role, label } = player;
   const sourceChanged = hasPlayerSourceChanged(video.dataset.source, source);
@@ -114,19 +128,20 @@ function setPlayerSource(player, source, song, contour) {
       ? `${label} for ${song.title}, ${song.passage}`
       : `${label} for ${song.title}, ${song.passage}, using the ${contour.name} contour`;
 
-  video.poster = role === "groundTruth" ? "static/media/hero-480.avif" : contour.image;
+  video.poster = "static/media/hero-480.avif";
   video.setAttribute("aria-label", ariaLabel);
-  loadButton.setAttribute("aria-label", `Load and play ${label} for ${song.title}`);
+  player.songTitle = song.title;
 
   if (!sourceChanged) return;
 
   player.generation += 1;
   video.pause();
+  video.controls = false;
   video.removeAttribute("src");
   video.dataset.source = source;
   video.load();
   loadButton.hidden = false;
-  loadButton.textContent = "Load and play";
+  setLoadButtonAction(player, "Load and play");
   status.textContent = "Loads only when requested.";
   status.dataset.state = "idle";
 }
@@ -135,6 +150,8 @@ async function loadPlayer(player) {
   const { video, loadButton } = player;
   const requestedSource = video.dataset.source;
   const requestGeneration = ++player.generation;
+
+  video.controls = true;
 
   if (!video.getAttribute("src")) {
     video.src = requestedSource;
@@ -152,10 +169,8 @@ async function loadPlayer(player) {
   } catch {
     if (!isPlaybackGenerationCurrent(requestGeneration, player.generation)) return;
 
-    loadButton.hidden = false;
-    loadButton.textContent = "Try loading again";
+    setPlayerRetryState(player, "Playback did not start. Try again.");
     loadButton.focus();
-    setStatus(player, "Playback did not start. Try again.", "error");
   }
 }
 
@@ -175,8 +190,6 @@ function renderSelection() {
   selectionContext.textContent = `${song.artist} / ${song.passage}`;
   selectionTitle.textContent = `${song.title}: ${contour.name}`;
   selectionDescription.textContent = contour.description;
-  contourImage.src = contour.image;
-  contourImage.alt = `${contour.name} surprise contour. ${contour.description}`;
 
   for (const player of players) {
     setPlayerSource(player, sources[player.role], song, contour);
@@ -253,9 +266,7 @@ for (const player of players) {
   });
 
   player.video.addEventListener("error", () => {
-    player.loadButton.hidden = false;
-    player.loadButton.textContent = "Try loading again";
-    setStatus(player, "This sample could not be loaded. Try again.", "error");
+    setPlayerRetryState(player, "This sample could not be loaded. Try again.");
   });
 }
 

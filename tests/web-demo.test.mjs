@@ -44,7 +44,6 @@ test("every catalog media path resolves to a checked-in asset", async () => {
       referencedFiles.add(sources.groundTruth);
       referencedFiles.add(sources.surpriseNet);
       referencedFiles.add(sources.weighted);
-      referencedFiles.add(contour.image);
       referencedFiles.add(contour.thumbnail);
     }
   }
@@ -65,6 +64,16 @@ test("the page is dependency-free and loads the app as a module", async () => {
   assert.match(html, /<picture>[\s\S]+media="\(max-width: 56rem\)"[\s\S]+type="image\/avif"[\s\S]+<img/);
 });
 
+test("the demo explains that its samples are precomputed and backend-free", async () => {
+  const [html, readme] = await Promise.all([
+    readFile(resolve(siteRoot, "index.html"), "utf8"),
+    readFile(resolve(repositoryRoot, "README.md"), "utf8"),
+  ]);
+
+  assert.match(html, /precomputed/i);
+  assert.match(readme, /does not require a backend/i);
+});
+
 test("every static asset referenced by the page exists", async () => {
   const html = await readFile(resolve(siteRoot, "index.html"), "utf8");
   const assetPaths = [...html.matchAll(/(?:href|poster|src)="([^"]+)"/g)]
@@ -77,7 +86,7 @@ test("every static asset referenced by the page exists", async () => {
 test("selector cards use dedicated contour thumbnails", () => {
   for (const contour of CONTOURS) {
     assert.match(contour.thumbnail, /-thumb\.avif$/);
-    assert.notEqual(contour.thumbnail, contour.image);
+    assert.equal("image" in contour, false);
   }
 });
 
@@ -86,8 +95,10 @@ test("the page requires an explicit user action before loading any video", async
 
   assert.equal(html.match(/preload="none"/g)?.length, 3);
   assert.equal(html.match(/data-load-player=/g)?.length, 3);
-  assert.match(html, /poster="static\/media\/hero-480\.avif"/);
+  assert.doesNotMatch(html, /<video\b[^>]*\scontrols(?:\s|>)/);
+  assert.equal(html.match(/poster="static\/media\/hero-480\.avif"/g)?.length, 3);
   assert.doesNotMatch(html, /poster="static\/media\/hero\.jpg"/);
+  assert.doesNotMatch(html, /static\/media\/Type-[a-f]\.png/);
   assert.doesNotMatch(html, /\.mp4/);
 });
 
@@ -132,4 +143,15 @@ test("a stale playback generation cannot update a newer selection", async () => 
 
   assert.equal(isPlaybackGenerationCurrent(2, 4), false);
   assert.equal(isPlaybackGenerationCurrent(5, 5), true);
+});
+
+test("a retry action keeps its visible label in the accessible name", async () => {
+  const { getLoadButtonLabel } = await import(
+    "../docs/static/js/player-state.mjs"
+  );
+
+  assert.equal(
+    getLoadButtonLabel("Try loading again", "SurpriseNet", "Breakdown"),
+    "Try loading again SurpriseNet for Breakdown",
+  );
 });

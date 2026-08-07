@@ -25,7 +25,6 @@ export const CONTOURS = Object.freeze([
     index: 1,
     name: "Rising",
     description: "Surprise increases over time.",
-    image: "static/media/Type-a.png",
     thumbnail: "static/media/Type-a-thumb.avif",
   }),
   Object.freeze({
@@ -33,7 +32,6 @@ export const CONTOURS = Object.freeze([
     index: 2,
     name: "Falling",
     description: "Surprise decreases over time.",
-    image: "static/media/Type-b.png",
     thumbnail: "static/media/Type-b-thumb.avif",
   }),
   Object.freeze({
@@ -41,7 +39,6 @@ export const CONTOURS = Object.freeze([
     index: 3,
     name: "Low steady",
     description: "Surprise stays low.",
-    image: "static/media/Type-c.png",
     thumbnail: "static/media/Type-c-thumb.avif",
   }),
   Object.freeze({
@@ -49,7 +46,6 @@ export const CONTOURS = Object.freeze([
     index: 4,
     name: "High steady",
     description: "Surprise stays high.",
-    image: "static/media/Type-d.png",
     thumbnail: "static/media/Type-d-thumb.avif",
   }),
   Object.freeze({
@@ -57,7 +53,6 @@ export const CONTOURS = Object.freeze([
     index: 5,
     name: "Arch",
     description: "Surprise rises, then falls.",
-    image: "static/media/Type-e.png",
     thumbnail: "static/media/Type-e-thumb.avif",
   }),
   Object.freeze({
@@ -65,7 +60,6 @@ export const CONTOURS = Object.freeze([
     index: 6,
     name: "Valley",
     description: "Surprise falls, then rises.",
-    image: "static/media/Type-f.png",
     thumbnail: "static/media/Type-f-thumb.avif",
   }),
 ]);

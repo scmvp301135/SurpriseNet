@@ -6,7 +6,9 @@ SurpriseNet is a user-controlled conditional variational autoencoder for melody 
 
 ## Web sample explorer
 
-The interactive demo is now part of this repository under [`docs/`](docs/). It compares:
+The sample explorer is a static, precomputed listening demo under [`docs/`](docs/). It does not run SurpriseNet and does not require a backend. GitHub Pages can serve it directly. A hosted inference service such as Hugging Face Spaces would only be needed for user-submitted melodies or real-time generation.
+
+The explorer compares:
 
 - 3 melody excerpts
 - 6 user-controlled surprise contours

@@ -483,24 +483,22 @@ h3 {
 }
 
 .current-selection {
-  display: grid;
   margin: 0 clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 3vw, 2.5rem);
   overflow: hidden;
   border-radius: var(--radius);
   background: var(--accent-soft);
-  grid-template-columns: minmax(0, 1.15fr) minmax(14rem, 0.85fr);
 }
 
 .selection-copy {
   display: flex;
-  min-height: 16rem;
+  min-height: 9.5rem;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(1.5rem, 4vw, 3.5rem);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
 }
 
 .selection-context {
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.55rem;
   color: var(--accent-strong);
   font-family: var(--font-mono);
   font-size: 0.76rem;
@@ -508,33 +506,25 @@ h3 {
 }
 
 .selection-copy h3 {
-  font-size: clamp(2rem, 4vw, 4.2rem);
+  font-size: clamp(1.8rem, 3vw, 3.1rem);
 }
 
 .selection-copy > p:last-child {
-  margin-top: 1rem;
+  margin-top: 0.65rem;
   color: var(--ink-soft);
-}
-
-.current-contour {
-  min-height: 16rem;
-  background: #fdfdfb;
-}
-
-.current-contour img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
 }
 
 .comparison-grid {
   display: grid;
   border-top: 0.0625rem solid var(--line);
-  grid-template-columns: minmax(0, 0.82fr) repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .player-panel {
+  display: grid;
   min-width: 0;
+  align-content: start;
+  grid-template-rows: auto auto auto;
   padding: clamp(1.25rem, 2.5vw, 2rem);
 }
 
@@ -817,14 +807,6 @@ h3 {
 
   .contour-option {
     scroll-snap-align: start;
-  }
-
-  .current-selection {
-    grid-template-columns: 1fr;
-  }
-
-  .current-contour {
-    min-height: 14rem;
   }
 
   .comparison-grid {
