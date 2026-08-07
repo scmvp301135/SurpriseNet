@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta
+      name="description"
+      content="Explore SurpriseNet melody harmonization samples across six user-controlled surprise contours."
+    >
+    <meta name="theme-color" content="#f2f5f2" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1417" media="(prefers-color-scheme: dark)">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SurpriseNet">
+    <meta property="og:title" content="SurpriseNet Sample Explorer">
+    <meta
+      property="og:description"
+      content="Hear how six user-controlled surprise contours shape generated chord progressions."
+    >
+    <meta property="og:url" content="https://scmvp301135.github.io/SurpriseNet/">
+    <meta
+      property="og:image"
+      content="https://scmvp301135.github.io/SurpriseNet/static/media/og-image-v2.jpg"
+    >
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta
+      property="og:image:alt"
+      content="A rising surprise contour crossing layered chord planes."
+    >
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SurpriseNet Sample Explorer">
+    <meta
+      name="twitter:description"
+      content="Hear how six user-controlled surprise contours shape generated chord progressions."
+    >
+    <meta
+      name="twitter:image"
+      content="https://scmvp301135.github.io/SurpriseNet/static/media/og-image-v2.jpg"
+    >
+
+    <link rel="canonical" href="https://scmvp301135.github.io/SurpriseNet/">
+    <link rel="icon" type="image/jpeg" href="static/media/favicon.jpg">
+    <link
+      rel="preload"
+      as="image"
+      href="static/media/hero-480.avif"
+      type="image/avif"
+      media="(max-width: 56rem)"
+      fetchpriority="high"
+    >
+    <link
+      rel="preload"
+      as="image"
+      href="static/media/hero-960.avif"
+      type="image/avif"
+      media="(min-width: 56.001rem)"
+      fetchpriority="high"
+    >
+    <link rel="stylesheet" href="static/css/style.css">
+    <title>SurpriseNet Sample Explorer</title>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ScholarlyArticle",
+        "name": "SurpriseNet: Melody Harmonization Conditioning on User-controlled Surprise Contours",
+        "author": [
+          { "@type": "Person", "name": "Yi-Wei Chen" },
+          { "@type": "Person", "name": "Hung-Shin Lee" },
+          { "@type": "Person", "name": "Yen-Hsing Chen" },
+          { "@type": "Person", "name": "Hsin-Min Wang" }
+        ],
+        "datePublished": "2021",
+        "url": "https://arxiv.org/abs/2108.00378"
+      }
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="wordmark" href="#top" aria-label="SurpriseNet home">SurpriseNet</a>
+        <div class="nav-links">
+          <a href="#listen">Listen</a>
+          <a href="#method">Method</a>
+          <a href="#paper">Paper</a>
+          <a href="https://github.com/scmvp301135/SurpriseNet">GitHub</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Interactive sample explorer</p>
+          <h1 id="hero-title">Hear surprise take shape.</h1>
+          <p class="hero-summary">
+            Compare real SurpriseNet outputs across six user-controlled contours and three melody excerpts.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#listen">Open the explorer</a>
+            <a class="button button-secondary" href="https://arxiv.org/abs/2108.00378">
+              Read the paper
+            </a>
+          </div>
+        </div>
+
+        <figure class="hero-visual">
+          <picture>
+            <source
+              media="(max-width: 56rem)"
+              type="image/avif"
+              srcset="static/media/hero-480.avif"
+            >
+            <source type="image/avif" srcset="static/media/hero-960.avif">
+            <img
+              src="static/media/hero.jpg"
+              width="1280"
+              height="853"
+              alt="A rising surprise contour crossing a field of layered chord planes."
+              fetchpriority="high"
+            >
+          </picture>
+        </figure>
+      </section>
+
+      <section class="project-snapshot" aria-labelledby="snapshot-title">
+        <div class="section-heading">
+          <h2 id="snapshot-title">Harmony, guided by expectation.</h2>
+          <p>
+            SurpriseNet conditions a variational autoencoder with a contour derived from chord-transition probabilities.
+          </p>
+        </div>
+
+        <dl class="project-metrics" aria-label="Demo contents">
+          <div>
+            <dt>Melody excerpts</dt>
+            <dd>3</dd>
+          </div>
+          <div>
+            <dt>Surprise contours</dt>
+            <dd>6</dd>
+          </div>
+          <div>
+            <dt>Audio-visual samples</dt>
+            <dd>39</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="explorer section" id="listen" aria-labelledby="explorer-title">
+        <div class="section-heading section-heading-narrow">
+          <h2 id="explorer-title">One melody, six surprise shapes.</h2>
+          <p>
+            Pick an excerpt and contour, then compare the source progression with two model variants.
+          </p>
+        </div>
+
+        <div class="explorer-shell">
+          <div class="selector-block">
+            <div class="selector-heading">
+              <h3>Choose an excerpt</h3>
+              <p>The selection stays shareable in the page URL.</p>
+            </div>
+            <div
+              class="song-selector"
+              id="song-selector"
+              role="group"
+              aria-label="Melody excerpt"
+            ></div>
+          </div>
+
+          <div class="selector-block selector-block-contours">
+            <div class="selector-heading">
+              <h3>Shape the surprise contour</h3>
+              <p>The graph controls how chord surprise changes over time.</p>
+            </div>
+            <div
+              class="contour-selector"
+              id="contour-selector"
+              role="group"
+              aria-label="Surprise contour"
+            ></div>
+          </div>
+
+          <div class="current-selection">
+            <div class="selection-copy" aria-live="polite">
+              <p class="selection-context" id="selection-context"></p>
+              <h3 id="selection-title"></h3>
+              <p id="selection-description"></p>
+            </div>
+            <figure class="current-contour">
+              <img
+                id="current-contour-image"
+                src="static/media/Type-a.png"
+                width="640"
+                height="525"
+                loading="lazy"
+                decoding="async"
+                alt=""
+              >
+            </figure>
+          </div>
+
+          <div class="comparison-grid" aria-label="Harmonization comparison">
+            <article class="player-panel player-panel-source">
+              <header>
+                <h3>Ground truth</h3>
+                <p>The human-arranged chord progression.</p>
+              </header>
+              <div class="video-frame">
+                <video
+                  id="ground-truth-video"
+                  controls
+                  playsinline
+                  preload="none"
+                  poster="static/media/hero-480.avif"
+                  aria-describedby="ground-truth-status"
+                ></video>
+                <button class="load-player" type="button" data-load-player="groundTruth">
+                  Load and play
+                </button>
+              </div>
+              <p class="player-status" id="ground-truth-status" role="status">
+                Loads when you press play.
+              </p>
+            </article>
+
+            <article class="player-panel">
+              <header>
+                <h3>SurpriseNet</h3>
+                <p>Generated with the selected contour.</p>
+              </header>
+              <div class="video-frame">
+                <video
+                  id="surprisenet-video"
+                  controls
+                  playsinline
+                  preload="none"
+                  poster="static/media/Type-a.png"
+                  aria-describedby="surprisenet-status"
+                ></video>
+                <button class="load-player" type="button" data-load-player="surpriseNet">
+                  Load and play
+                </button>
+              </div>
+              <p class="player-status" id="surprisenet-status" role="status">
+                Loads when you press play.
+              </p>
+            </article>
+
+            <article class="player-panel">
+              <header>
+                <h3>Weighted SurpriseNet</h3>
+                <p>Generated with additional surprise weighting.</p>
+              </header>
+              <div class="video-frame">
+                <video
+                  id="weighted-video"
+                  controls
+                  playsinline
+                  preload="none"
+                  poster="static/media/Type-a.png"
+                  aria-describedby="weighted-status"
+                ></video>
+                <button class="load-player" type="button" data-load-player="weighted">
+                  Load and play
+                </button>
+              </div>
+              <p class="player-status" id="weighted-status" role="status">
+                Loads when you press play.
+              </p>
+            </article>
+          </div>
+
+          <noscript>
+            <p class="notice">JavaScript is required to switch between the listening samples.</p>
+          </noscript>
+        </div>
+      </section>
+
+      <section class="method section" id="method" aria-labelledby="method-title">
+        <figure class="method-visual">
+          <img
+            src="static/media/user_condition.png"
+            width="960"
+            height="611"
+            loading="lazy"
+            decoding="async"
+            alt="Six plots showing rising, falling, low, high, arch, and valley surprise contours."
+          >
+        </figure>
+
+        <div class="method-copy">
+          <h2 id="method-title">What to listen for.</h2>
+          <p>
+            The contour represents harmonic unexpectedness over time. It guides chord selection without changing the input melody.
+          </p>
+          <ol class="listening-notes">
+            <li>
+              <strong>Start with the source.</strong>
+              Learn the original harmonic rhythm and phrase boundary.
+            </li>
+            <li>
+              <strong>Compare the same contour.</strong>
+              Listen for where either model delays or releases tension.
+            </li>
+            <li>
+              <strong>Switch the shape.</strong>
+              Notice how the harmonic path changes while the melody stays fixed.
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="paper section" id="paper" aria-labelledby="paper-title">
+        <div class="paper-copy">
+          <h2 id="paper-title">Paper and source.</h2>
+          <p>
+            The model, training code, evaluation utilities, and this explorer now live in one repository history.
+          </p>
+        </div>
+
+        <blockquote class="citation">
+          <p>
+            “SurpriseNet: Melody Harmonization Conditioning on User-controlled Surprise Contours”
+          </p>
+          <cite>Yi-Wei Chen, Hung-Shin Lee, Yen-Hsing Chen, and Hsin-Min Wang. ISMIR 2021.</cite>
+        </blockquote>
+
+        <div class="resource-links" aria-label="Project resources">
+          <a href="https://arxiv.org/abs/2108.00378">arXiv paper</a>
+          <a href="https://github.com/scmvp301135/SurpriseNet">Source repository</a>
+          <a href="https://github.com/wayne391/lead-sheet-dataset">HLSD dataset</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>SurpriseNet, ISMIR 2021.</p>
+      <a href="#top">Back to top</a>
+    </footer>
+
+    <script type="module" src="static/js/app.mjs"></script>
+  </body>
+</html>
