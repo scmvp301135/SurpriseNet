@@ -102,6 +102,14 @@ test("the page requires an explicit user action before loading any video", async
   assert.doesNotMatch(html, /\.mp4/);
 });
 
+test("video letterboxing uses the light score surface instead of black", async () => {
+  const css = await readFile(resolve(siteRoot, "static/css/style.css"), "utf8");
+
+  assert.match(css, /--media-surface:\s*#fff/);
+  assert.equal(css.match(/background:\s*var\(--media-surface\)/g)?.length, 2);
+  assert.doesNotMatch(css, /#071013/);
+});
+
 test("a late canplay event does not overwrite an active playing state", async () => {
   const { getCanPlayStatus } = await import("../docs/static/js/player-state.mjs");
 

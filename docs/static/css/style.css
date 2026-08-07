@@ -4,6 +4,7 @@
   --surface: #fbfcf9;
   --surface-muted: #e5ece9;
   --surface-strong: #d9e5e1;
+  --media-surface: #fff;
   --ink: #102126;
   --ink-soft: #52656a;
   --line: #c8d5d1;
@@ -550,14 +551,15 @@ h3 {
 .video-frame {
   position: relative;
   overflow: hidden;
+  border: 0.0625rem solid var(--line);
   border-radius: var(--radius);
-  background: #071013;
+  background: var(--media-surface);
 }
 
 .player-panel video {
   width: 100%;
   aspect-ratio: 16 / 10;
-  background: #071013;
+  background: var(--media-surface);
   object-fit: contain;
 }
 
