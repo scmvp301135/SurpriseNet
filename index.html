@@ -1,520 +1,338 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-    <!-- Required meta tags -->
+  <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta property="og:image" content="static/media/og-image.png">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="768">
-    <meta property="og:image:height" content="768">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta
+      name="description"
+      content="Explore SurpriseNet melody harmonization samples across six user-controlled surprise contours."
+    >
+    <meta name="theme-color" content="#f2f5f2" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1417" media="(prefers-color-scheme: dark)">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SurpriseNet">
+    <meta property="og:title" content="SurpriseNet Sample Explorer">
+    <meta
+      property="og:description"
+      content="Hear how six user-controlled surprise contours shape generated chord progressions."
+    >
+    <meta property="og:url" content="https://scmvp301135.github.io/SurpriseNet/">
+    <meta
+      property="og:image"
+      content="https://scmvp301135.github.io/SurpriseNet/static/media/og-image-v2.jpg"
+    >
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta
+      property="og:image:alt"
+      content="A rising surprise contour crossing layered chord planes."
+    >
+
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="static/media/og-image.png">
+    <meta name="twitter:title" content="SurpriseNet Sample Explorer">
+    <meta
+      name="twitter:description"
+      content="Hear how six user-controlled surprise contours shape generated chord progressions."
+    >
+    <meta
+      name="twitter:image"
+      content="https://scmvp301135.github.io/SurpriseNet/static/media/og-image-v2.jpg"
+    >
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link type="text/css" rel="stylesheet" href="static/css/style.css"/>
-    <title>SurpriseNet</title>
-</head>
+    <link rel="canonical" href="https://scmvp301135.github.io/SurpriseNet/">
+    <link rel="icon" type="image/jpeg" href="static/media/favicon.jpg">
+    <link
+      rel="preload"
+      as="image"
+      href="static/media/hero-480.avif"
+      type="image/avif"
+      media="(max-width: 56rem)"
+      fetchpriority="high"
+    >
+    <link
+      rel="preload"
+      as="image"
+      href="static/media/hero-960.avif"
+      type="image/avif"
+      media="(min-width: 56.001rem)"
+      fetchpriority="high"
+    >
+    <link rel="stylesheet" href="static/css/style.css">
+    <title>SurpriseNet Sample Explorer</title>
 
-<body>
-    <div class="header">
-        <h1 class="project-name">Demo of SurpriseNet</h1>
-        <br>
-        <br>
-        <a class="btn btn-outline-dark" href="https://github.com/scmvp301135/SurpriseNet" class="btn">View on GitHub</a>
-    </div>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ScholarlyArticle",
+        "name": "SurpriseNet: Melody Harmonization Conditioning on User-controlled Surprise Contours",
+        "author": [
+          { "@type": "Person", "name": "Yi-Wei Chen" },
+          { "@type": "Person", "name": "Hung-Shin Lee" },
+          { "@type": "Person", "name": "Yen-Hsing Chen" },
+          { "@type": "Person", "name": "Hsin-Min Wang" }
+        ],
+        "datePublished": "2021",
+        "url": "https://arxiv.org/abs/2108.00378"
+      }
+    </script>
+  </head>
 
-    <div class="content">
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
-        <div class="block">   
-            <h2>SurpriseNet</h2>
-            <p>
-                <span style="font-style: italic;">Yi-Wei Chen, Hung-Shin Lee, Yen-Hsing Chen, Hsin-Min Wang,</span>
-                "<span style="font-weight: bold;">SurpriseNet: Melody Harmonization Conditioning on User-controlled Surprise Contours,</span>" in <span style="font-style: italic;"> Proc. ISMIR, 2021.</span>
-            </p>
-            <p>In this study, we proposed SurpriseNet, which is based on a conditional VAE model and combines a surprise contour from the transition probability in a Markov chain, to achieve a user-controlled melody harmonization task. From the generated samples, we observed that the model could accurately generate various harmonic chord progressions according to the given surprise contours.</p>
-            <p>The experiments were conducted on the <a href="https://github.com/wayne391/lead-sheet-dataset">Hooktheory Lead Sheet Dataset</a>, which contains rich intonation data, such as Roman, symbol, secondary, and mode data.</p>
-        </div>   
+    <header class="site-header">
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="wordmark" href="#top" aria-label="SurpriseNet home">SurpriseNet</a>
+        <div class="nav-links">
+          <a href="#listen">Listen</a>
+          <a href="#method">Method</a>
+          <a href="#paper">Paper</a>
+          <a href="https://github.com/scmvp301135/SurpriseNet">GitHub</a>
+        </div>
+      </nav>
+    </header>
 
-        <!-- <div class="block">   
-            <h2>Surprise Contours</h2>
-            <p>We give out the following six types of function as the surprise contours to the model.</p>
-            <div id="surp-contour">
-                <img src="static/media/user_condition.png" alt="">
+    <main id="main-content">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Precomputed listening demo</p>
+          <h1 id="hero-title">Hear surprise take shape.</h1>
+          <p class="hero-summary">
+            Compare precomputed SurpriseNet outputs across six user-controlled contours and three melody excerpts.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#listen">Open the explorer</a>
+            <a class="button button-secondary" href="https://arxiv.org/abs/2108.00378">
+              Read the paper
+            </a>
+          </div>
+        </div>
+
+        <figure class="hero-visual">
+          <picture>
+            <source
+              media="(max-width: 56rem)"
+              type="image/avif"
+              srcset="static/media/hero-480.avif"
+            >
+            <source type="image/avif" srcset="static/media/hero-960.avif">
+            <img
+              src="static/media/hero.jpg"
+              width="1280"
+              height="853"
+              alt="A rising surprise contour crossing a field of layered chord planes."
+              fetchpriority="high"
+            >
+          </picture>
+        </figure>
+      </section>
+
+      <section class="project-snapshot" aria-labelledby="snapshot-title">
+        <div class="section-heading">
+          <h2 id="snapshot-title">Harmony, guided by expectation.</h2>
+          <p>
+            SurpriseNet conditions a variational autoencoder with a contour derived from chord-transition probabilities.
+          </p>
+        </div>
+
+        <dl class="project-metrics" aria-label="Demo contents">
+          <div>
+            <dt>Melody excerpts</dt>
+            <dd>3</dd>
+          </div>
+          <div>
+            <dt>Surprise contours</dt>
+            <dd>6</dd>
+          </div>
+          <div>
+            <dt>Audio-visual samples</dt>
+            <dd>39</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="explorer section" id="listen" aria-labelledby="explorer-title">
+        <div class="section-heading section-heading-narrow">
+          <h2 id="explorer-title">One melody, six surprise shapes.</h2>
+          <p>
+            Pick an excerpt and contour, then compare the source progression with two model variants. Everything here is served as static media; this page does not run model inference.
+          </p>
+        </div>
+
+        <div class="explorer-shell">
+          <div class="selector-block">
+            <div class="selector-heading">
+              <h3>Choose an excerpt</h3>
+              <p>The selection stays shareable in the page URL.</p>
             </div>
-        </div>   -->
+            <div
+              class="song-selector"
+              id="song-selector"
+              role="group"
+              aria-label="Melody excerpt"
+            ></div>
+          </div>
 
-        <div class="block">   
-            <h2>Generated Samples</h2>
-            <p> We gave out the following six types (a) - (f) of function as the surprise contours to the model. The graphs indicate the surprise level of chords varing with time. Here we selected some generated samples and demonstrated below:</p>
-
-            <!-- Song1 -->
-            <h3>🎧 Joe Dassin - "Les Champs-Elysées" (verse)</h3>
-            <div class="media-blk">
-                <div class="song">
-                    <small>Groundturth</small>
-                    <div class="wrapper">
-                        <video class="video truth">
-                            <source src="static/media/81-truth.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
+          <div class="selector-block selector-block-contours">
+            <div class="selector-heading">
+              <h3>Shape the surprise contour</h3>
+              <p>The graph controls how chord surprise changes over time.</p>
             </div>
+            <div
+              class="contour-selector"
+              id="contour-selector"
+              role="group"
+              aria-label="Surprise contour"
+            ></div>
+          </div>
 
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-a.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-type1.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-weight-type1.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
+          <div class="current-selection">
+            <div class="selection-copy" aria-live="polite">
+              <p class="selection-context" id="selection-context"></p>
+              <h3 id="selection-title"></h3>
+              <p id="selection-description"></p>
             </div>
+          </div>
 
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-b.png" alt=""> 
-                </div>
+          <div class="comparison-grid" aria-label="Harmonization comparison">
+            <article class="player-panel player-panel-source">
+              <header>
+                <h3>Ground truth</h3>
+                <p>The human-arranged chord progression.</p>
+              </header>
+              <div class="video-frame">
+                <video
+                  id="ground-truth-video"
+                  playsinline
+                  preload="none"
+                  poster="static/media/hero-480.avif"
+                  aria-describedby="ground-truth-status"
+                ></video>
+                <button class="load-player" type="button" data-load-player="groundTruth">
+                  Load and play
+                </button>
+              </div>
+              <p class="player-status" id="ground-truth-status" role="status">
+                Loads when you press play.
+              </p>
+            </article>
 
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-type2.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-weight-type2.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
+            <article class="player-panel">
+              <header>
+                <h3>SurpriseNet</h3>
+                <p>Generated with the selected contour.</p>
+              </header>
+              <div class="video-frame">
+                <video
+                  id="surprisenet-video"
+                  playsinline
+                  preload="none"
+                  poster="static/media/hero-480.avif"
+                  aria-describedby="surprisenet-status"
+                ></video>
+                <button class="load-player" type="button" data-load-player="surpriseNet">
+                  Load and play
+                </button>
+              </div>
+              <p class="player-status" id="surprisenet-status" role="status">
+                Loads when you press play.
+              </p>
+            </article>
 
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-c.png" alt=""> 
-                </div>
+            <article class="player-panel">
+              <header>
+                <h3>Weighted SurpriseNet</h3>
+                <p>Generated with additional surprise weighting.</p>
+              </header>
+              <div class="video-frame">
+                <video
+                  id="weighted-video"
+                  playsinline
+                  preload="none"
+                  poster="static/media/hero-480.avif"
+                  aria-describedby="weighted-status"
+                ></video>
+                <button class="load-player" type="button" data-load-player="weighted">
+                  Load and play
+                </button>
+              </div>
+              <p class="player-status" id="weighted-status" role="status">
+                Loads when you press play.
+              </p>
+            </article>
+          </div>
 
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-type3.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-weight-type3.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
+          <noscript>
+            <p class="notice">JavaScript is required to switch between the listening samples.</p>
+          </noscript>
+        </div>
+      </section>
 
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-d.png" alt=""> 
-                </div>
+      <section class="method section" id="method" aria-labelledby="method-title">
+        <figure class="method-visual">
+          <img
+            src="static/media/user_condition.png"
+            width="960"
+            height="611"
+            loading="lazy"
+            decoding="async"
+            alt="Six plots showing rising, falling, low, high, arch, and valley surprise contours."
+          >
+        </figure>
 
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-type4.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-weight-type4.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
+        <div class="method-copy">
+          <h2 id="method-title">What to listen for.</h2>
+          <p>
+            The contour represents harmonic unexpectedness over time. It guides chord selection without changing the input melody.
+          </p>
+          <ol class="listening-notes">
+            <li>
+              <strong>Start with the source.</strong>
+              Learn the original harmonic rhythm and phrase boundary.
+            </li>
+            <li>
+              <strong>Compare the same contour.</strong>
+              Listen for where either model delays or releases tension.
+            </li>
+            <li>
+              <strong>Switch the shape.</strong>
+              Notice how the harmonic path changes while the melody stays fixed.
+            </li>
+          </ol>
+        </div>
+      </section>
 
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-e.png" alt=""> 
-                </div>
+      <section class="paper section" id="paper" aria-labelledby="paper-title">
+        <div class="paper-copy">
+          <h2 id="paper-title">Paper and source.</h2>
+          <p>
+            The model, training code, evaluation utilities, and this explorer now live in one repository history.
+          </p>
+        </div>
 
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-type5.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-weight-type5.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
+        <blockquote class="citation">
+          <p>
+            “SurpriseNet: Melody Harmonization Conditioning on User-controlled Surprise Contours”
+          </p>
+          <cite>Yi-Wei Chen, Hung-Shin Lee, Yen-Hsing Chen, and Hsin-Min Wang. ISMIR 2021.</cite>
+        </blockquote>
 
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-f.png" alt=""> 
-                </div>
+        <div class="resource-links" aria-label="Project resources">
+          <a href="https://arxiv.org/abs/2108.00378">arXiv paper</a>
+          <a href="https://github.com/scmvp301135/SurpriseNet">Source repository</a>
+          <a href="https://github.com/wayne391/lead-sheet-dataset">HLSD dataset</a>
+        </div>
+      </section>
+    </main>
 
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-type6.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/81-weight-type6.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
+    <footer class="site-footer">
+      <p>SurpriseNet, ISMIR 2021.</p>
+      <a href="#top">Back to top</a>
+    </footer>
 
-            <!-- Song 2 -->
-            <h3>🎧 Jack Johnson - "Breakdown" (verse)</h3>
-            <div class="media-blk">
-                <div class="song">
-                    <small>Groundturth</small>
-                    <div class="wrapper">
-                        <video class="video truth">
-                            <source src="static/media/5-truth.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-a.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-type1.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-weight-type1.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-b.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-type2.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-weight-type2.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-c.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-type3.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-weight-type3.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-d.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-type4.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-weight-type4.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-e.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-type5.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-weight-type5.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-f.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-type6.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/5-weight-type6.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Song 3 -->
-            <h3>🎧 Jack Johnson - "Breakdown" (chorus)</h3>
-            <div class="media-blk">
-                <div class="song">
-                    <small>Groundturth</small>
-                    <div class="wrapper">
-                        <video class="video truth">
-                            <source src="static/media/4-truth.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-a.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-type1.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-weight-type1.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-b.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-type2.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-weight-type2.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-c.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-type3.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-weight-type3.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-d.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-type4.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-weight-type4.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-e.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-type5.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-weight-type5.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-blk">
-                <div class="contour">
-                    <img src="static/media/Type-f.png" alt=""> 
-                </div>
-
-                <div class="song">
-                    <small>SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-type6.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                    <small>Weighted SurpriseNet</small>
-                    <div class="wrapper">
-                        <video class="video">
-                            <source src="static/media/4-weight-type6.mp4" type="video/mp4">
-                        </video>
-                        <div class="playpause"></div>
-                    </div>
-                </div>
-            </div>
-
-        </div>  
-
-    
-    </div>
-
-    <!-- jQuery library -->
-    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-    <script type="text/javascript" src = "static/js/script.js"></script>
-</body>
-
+    <script type="module" src="static/js/app.mjs"></script>
+  </body>
 </html>
