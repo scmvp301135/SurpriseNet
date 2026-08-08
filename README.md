@@ -25,25 +25,36 @@ python3 -m http.server 8000 --directory docs
 
 Then open <http://localhost:8000>.
 
-Run the dependency-free catalog and asset checks with Node.js:
+Run the dependency-free web and documentation checks with Node.js:
 
 ```bash
-node --test tests/web-demo.test.mjs
+node --test tests/repository-docs.test.mjs tests/web-demo.test.mjs
 ```
 
 The Pages workflow publishes `docs/` after changes reach `master`. In the repository settings, select **GitHub Actions** as the Pages source once. A separate website branch is no longer required after this refactor is merged and the publishing source is switched.
 
 ## Research code status
 
-The model and evaluation files are retained as the original 2021 research artifact. The checked-in training pipeline is not currently maintained for modern PyTorch, Apple MPS, or current Python releases, and it is not expected to run unchanged on a modern Mac.
+The model, data-loader, and evaluation files are retained as an incomplete historical artifact. They are useful for reading the 2021 implementation, but they do not form a supported end-to-end training or inference release.
 
-The historical Conda specification is in [`environment.yml`](environment.yml). It targets Python 3.6 and requires a separately prepared Hooktheory Lead Sheet Dataset. Treat it as a record of the original environment rather than a current reproducible setup.
+| Capability | Status |
+| --- | --- |
+| Static precomputed listening demo | Available |
+| Historical model definitions | Available |
+| Reproducible preprocessing | Not available |
+| Supported SurpriseNet training CLI | Not included |
+| Pretrained checkpoint | Not included |
+| Arbitrary-melody inference | Not included |
+
+The old `surprisenet_train.py` and `surprisenet_inference.py` filenames were renamed during an unfinished refactor. The current `train.py` and `eval.py` are incomplete historical artifacts, not replacement commands that are known to run. The web explorer only plays precomputed samples; it cannot harmonize a new melody.
+
+The historical Conda specification is in [`environment.yml`](environment.yml). It targets Python 3.6 and requires separately prepared data that is not reproducible from the checked-in files. Treat it as a record of the original environment rather than a current dependency lock. In particular, the research pipeline is not verified for modern PyTorch, Apple Silicon/MPS, or current Python releases, so it is not expected to run unchanged on a modern Mac.
+
+See [`RESEARCH_CODE.md`](RESEARCH_CODE.md) for the verified limitations, filename history, and what would be required to restore reproducible training or custom-melody inference.
 
 ## Dataset
 
-The experiments use the [Hooktheory Lead Sheet Dataset](https://github.com/wayne391/lead-sheet-dataset), which contains event-based JSON, MIDI files, chord symbols, and Roman-numeral labels.
-
-A prepared 4.9 GB sample dataset is available from the original [Google Drive download](https://drive.google.com/file/d/13iB5Brk1hypKsw9TSf8_d4Ka3xU0XmFZ/view?usp=sharing).
+The experiments use the [Hooktheory Lead Sheet Dataset](https://github.com/wayne391/lead-sheet-dataset), which contains event-based JSON, MIDI files, chord symbols, and Roman-numeral labels. The prepared data used by the historical scripts is not included in this repository, and the original external download is no longer available.
 
 Large datasets, checkpoints, NumPy arrays, and generated results are excluded by `.gitignore` so they are not accidentally added to Git history.
 
@@ -55,8 +66,8 @@ hparams/              Historical experiment configurations
 model/                CVAE and SurpriseNet model definitions
 tests/                Web catalog and asset checks
 utils/                Data, decoding, and evaluation utilities
-eval.py               Historical inference and evaluation entry point
-train.py              Historical training entry point
+eval.py               Incomplete historical evaluation artifact
+train.py              Incomplete historical training artifact
 tonal.py              Tonal-space utilities
 ```
 

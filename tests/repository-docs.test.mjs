@@ -1,0 +1,122 @@
+import assert from "node:assert/strict";
+import { access, readFile } from "node:fs/promises";
+import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
+import test from "node:test";
+import { fileURLToPath } from "node:url";
+
+const testDirectory = dirname(fileURLToPath(import.meta.url));
+const repositoryRoot = resolve(testDirectory, "..");
+const maintainedDocuments = [
+  "README.md",
+  "RESEARCH_CODE.md",
+  "specs/research-code-support.md",
+];
+
+async function readMaintainedDocuments() {
+  return Promise.all(
+    maintainedDocuments.map(async (path) => ({
+      path,
+      text: await readFile(resolve(repositoryRoot, path), "utf8"),
+    })),
+  );
+}
+
+function localMarkdownTargets(markdown) {
+  return [...markdown.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)]
+    .map(([, target]) => target.trim().replace(/^<|>$/g, ""))
+    .filter(
+      (target) =>
+        target &&
+        !target.startsWith("#") &&
+        !target.startsWith("http://") &&
+        !target.startsWith("https://") &&
+        !target.startsWith("mailto:"),
+    )
+    .map((target) => decodeURIComponent(target.split("#", 1)[0]));
+}
+
+function pythonScriptCommands(path, text) {
+  return [
+    ...text.matchAll(
+      /^\s*(?:[$>]\s*)?(python(?:3)?)\s+([^\s]+\.py)(?:\s|$)/gm,
+    ),
+  ].map(([, executable, script]) => ({ executable, path, script }));
+}
+
+test("maintained documentation has no broken local links", async () => {
+  const documents = await readMaintainedDocuments();
+
+  await Promise.all(
+    documents.flatMap(({ path, text }) =>
+      localMarkdownTargets(text).map(async (target) => {
+        const documentDirectory = dirname(resolve(repositoryRoot, path));
+        const absoluteTarget = resolve(documentDirectory, target);
+        const repositoryRelativeTarget = relative(repositoryRoot, absoluteTarget);
+
+        assert.equal(
+          repositoryRelativeTarget === ".." ||
+            repositoryRelativeTarget.startsWith(`..${sep}`) ||
+            isAbsolute(repositoryRelativeTarget),
+          false,
+          `${path} link escapes the repository: ${target}`,
+        );
+
+        await assert.doesNotReject(
+          access(absoluteTarget),
+          `${path} links to missing local path: ${target}`,
+        );
+      }),
+    ),
+  );
+});
+
+test("documented Python commands only name checked-in scripts", async () => {
+  const documents = await readMaintainedDocuments();
+  const commands = documents.flatMap(({ path, text }) =>
+    pythonScriptCommands(path, text));
+
+  for (const { path, script } of commands) {
+    await assert.doesNotReject(
+      access(resolve(repositoryRoot, script)),
+      `${path} documents a missing Python script: ${script}`,
+    );
+  }
+});
+
+test("archival research entry points are not documented as runnable commands", async () => {
+  const documents = await readMaintainedDocuments();
+  const commands = documents.flatMap(({ path, text }) =>
+    pythonScriptCommands(path, text));
+  const unsupportedEntrypoints = new Set(
+    ["train.py", "eval.py", "surprisenet_train.py", "surprisenet_inference.py"]
+      .map((script) => resolve(repositoryRoot, script)),
+  );
+
+  for (const { path, script } of commands) {
+    assert.equal(
+      unsupportedEntrypoints.has(resolve(repositoryRoot, script)),
+      false,
+      `${path} presents an unsupported research artifact as runnable: ${script}`,
+    );
+  }
+});
+
+test("README publishes the research-code availability contract", async () => {
+  const readme = await readFile(resolve(repositoryRoot, "README.md"), "utf8");
+
+  for (const capability of [
+    "Reproducible preprocessing",
+    "Supported SurpriseNet training CLI",
+    "Pretrained checkpoint",
+    "Arbitrary-melody inference",
+  ]) {
+    assert.match(
+      readme,
+      new RegExp(`\\|\\s*${capability}\\s*\\|\\s*Not (?:included|available)\\s*\\|`, "i"),
+    );
+  }
+
+  assert.match(readme, /precomputed listening demo/i);
+  assert.match(readme, /incomplete historical artifacts/i);
+  assert.doesNotMatch(readme, /python\s+surprisenet_(?:train|inference)\.py/i);
+});
