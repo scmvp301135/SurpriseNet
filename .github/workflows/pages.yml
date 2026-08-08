@@ -26,8 +26,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
-      - name: Test web demo
-        run: node --test tests/web-demo.test.mjs
+      - name: Test web demo and documentation
+        run: node --test tests/repository-docs.test.mjs tests/web-demo.test.mjs
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
