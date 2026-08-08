@@ -101,22 +101,43 @@ test("archival research entry points are not documented as runnable commands", a
   }
 });
 
-test("README publishes the research-code availability contract", async () => {
+test("README keeps the research-code warning concise and visitor-facing", async () => {
   const readme = await readFile(resolve(repositoryRoot, "README.md"), "utf8");
 
-  for (const capability of [
-    "Reproducible preprocessing",
-    "Supported SurpriseNet training CLI",
-    "Pretrained checkpoint",
-    "Arbitrary-melody inference",
-  ]) {
-    assert.match(
-      readme,
-      new RegExp(`\\|\\s*${capability}\\s*\\|\\s*Not (?:included|available)\\s*\\|`, "i"),
-    );
-  }
-
-  assert.match(readme, /precomputed listening demo/i);
-  assert.match(readme, /incomplete historical artifacts/i);
+  assert.match(
+    readme,
+    /precomputed samples\. It does not run model inference and does not require a backend\./i,
+  );
+  assert.match(readme, /RESEARCH_CODE\.md/);
+  assert.match(
+    readme,
+    /does not provide reproducible preprocessing, supported end-to-end training or custom-melody inference, or a pretrained checkpoint\./i,
+  );
+  assert.doesNotMatch(
+    readme,
+    /localhost|http\.server|node --test|GitHub Actions|repository settings/i,
+  );
   assert.doesNotMatch(readme, /python\s+surprisenet_(?:train|inference)\.py/i);
+});
+
+test("web demo CI checks pull requests without attempting a Pages deployment", async () => {
+  const workflow = await readFile(
+    resolve(repositoryRoot, ".github/workflows/pages.yml"),
+    "utf8",
+  );
+
+  assert.match(workflow, /pull_request:\s*\n\s+branches:\s*\n\s+- master/);
+  assert.match(workflow, /push:\s*\n\s+branches:\s*\n\s+- master/);
+  assert.match(workflow, /actions\/checkout@v\d+/);
+  assert.match(workflow, /actions\/setup-node@v\d+/);
+  assert.match(workflow, /node-version:\s*["']?24["']?/);
+  assert.match(
+    workflow,
+    /node --test tests\/repository-docs\.test\.mjs tests\/web-demo\.test\.mjs/,
+  );
+
+  assert.doesNotMatch(
+    workflow,
+    /configure-pages|upload-pages-artifact|deploy-pages|pages:\s*write|id-token:\s*write/,
+  );
 });

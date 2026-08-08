@@ -1,6 +1,9 @@
-name: Deploy web demo
+name: Web demo checks
 
 on:
+  pull_request:
+    branches:
+      - master
   push:
     branches:
       - master
@@ -8,35 +11,23 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  test:
+    name: Test static demo and documentation
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
-
-      - name: Test web demo and documentation
-        run: node --test tests/repository-docs.test.mjs tests/web-demo.test.mjs
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/checkout@v7
         with:
-          path: docs
+          persist-credentials: false
 
-      - name: Deploy Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+
+      - name: Run dependency-free tests
+        run: node --test tests/repository-docs.test.mjs tests/web-demo.test.mjs
